@@ -1,16 +1,20 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDrag } from "@use-gesture/react";
 import { seriesById } from "../data/artworks";
-import { parseAspect, priceLabel, thumb } from "../lib/util";
+import { parseAspect, priceLabel } from "../lib/util";
+import { imgProps, blurFor, sizedSrc, GRID_SIZES, LIGHTBOX_SIZES } from "../lib/img";
 import { StatusPill } from "./UI";
 import { Link } from "react-router-dom";
+import "../styles/gallery.css";
 
 const EASE = [0.16, 1, 0.3, 1];
-const SPRING = { type: "spring", stiffness: 260, damping: 30, mass: 0.9 };
+// a slightly softer, weightier spring than before — the shared-element painting
+// should settle like a hung canvas, not snap.
+const SPRING = { type: "spring", stiffness: 220, damping: 27, mass: 1 };
 
-/* the "View" cursor takes the dominant colour of each series' paintings */
+/* the "View" cursor + card glow take the dominant colour of each series */
 const SERIES_TINT = {
   awakening: "#d4562f",        // coral reef
   "paddy-series-1": "#6f9a3e", // paddy green
@@ -22,25 +26,31 @@ const SERIES_TINT = {
 /* ------------------------------------------------------------- one card */
 function Card({ art, index, onOpen }) {
   const aspect = parseAspect(art.dimensions);
+  const tint = SERIES_TINT[art.seriesId] || "#7b6bd1";
+  const blur = blurFor(art.image);
+  const [loaded, setLoaded] = useState(false);
   return (
     <motion.button
       className="art-card"
-      style={{ "--aspect": aspect }}
+      style={{ "--aspect": aspect, "--accent": tint }}
       onClick={() => onOpen(index)}
       data-cursor="View"
-      data-cursor-tint={SERIES_TINT[art.seriesId] || "#7b6bd1"}
+      data-cursor-tint={tint}
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.15, margin: "0px 0px -6% 0px" }}
       transition={{ duration: 0.9, ease: EASE, delay: (index % 3) * 0.05 }}
     >
-      <div className="art-card-frame">
+      <div className={`art-card-frame ${loaded ? "is-loaded" : ""}`}>
+        {blur && <img className="art-lqip" src={blur} alt="" aria-hidden="true" draggable="false" />}
         <motion.img
+          className="art-real"
           layoutId={`art-${art.uid}`}
-          src={thumb(art.image)}
+          {...imgProps(art.image, GRID_SIZES)}
           alt={art.title}
           loading="lazy"
           decoding="async"
+          onLoad={() => setLoaded(true)}
           transition={SPRING}
           draggable="false"
         />
@@ -56,6 +66,62 @@ function Card({ art, index, onOpen }) {
         </span>
       </div>
     </motion.button>
+  );
+}
+
+/* ------------------------------------------------- lightbox figure (loupe) */
+function LightboxFigure({ art, drag, bind, imgRef }) {
+  const loupeRef = useRef(null);
+  const [loupeOn, setLoupeOn] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const blur = blurFor(art.image);
+
+  const moveLoupe = (e) => {
+    const img = imgRef.current, lp = loupeRef.current;
+    if (!img || !lp) return;
+    const r = img.getBoundingClientRect();
+    const x = e.clientX - r.left, y = e.clientY - r.top;
+    if (x < 0 || y < 0 || x > r.width || y > r.height) { if (loupeOn) setLoupeOn(false); return; }
+    if (!loupeOn) setLoupeOn(true);
+    lp.style.left = `${x}px`;
+    lp.style.top = `${y}px`;
+    lp.style.backgroundPosition = `${(x / r.width) * 100}% ${(y / r.height) * 100}%`;
+    lp.style.backgroundSize = `${r.width * 2.2}px ${r.height * 2.2}px`;
+  };
+
+  return (
+    <motion.figure
+      key={art.uid}
+      className={`lb-figure ${loaded ? "is-loaded" : ""}`}
+      {...bind()}
+      onMouseMove={moveLoupe}
+      onMouseLeave={() => setLoupeOn(false)}
+      data-cursor-hide="true"
+      style={{ x: drag.x, y: drag.y, touchAction: "none" }}
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 - Math.min(Math.abs(drag.y) / 2000, 0.06) }}
+      exit={{ opacity: 0, scale: 0.98 }}
+      transition={{ duration: 0.4, ease: EASE }}
+    >
+      {blur && <img className="lb-lqip" src={blur} alt="" aria-hidden="true" draggable="false" />}
+      <motion.img
+        ref={imgRef}
+        layoutId={`art-${art.uid}`}
+        {...imgProps(art.image, LIGHTBOX_SIZES, { targetW: 1400 })}
+        alt={art.title}
+        decoding="async"
+        onLoad={() => setLoaded(true)}
+        transition={SPRING}
+        draggable="false"
+      />
+      <div
+        ref={loupeRef}
+        className={`lb-loupe ${loupeOn ? "is-on" : ""}`}
+        style={{ backgroundImage: `url("${sizedSrc(art.image, 2000)}")` }}
+        aria-hidden="true"
+      />
+      <span className="lb-hint mono">Hover to inspect</span>
+    </motion.figure>
   );
 }
 
@@ -110,25 +176,7 @@ function Lightbox({ items, index, setIndex, onClose }) {
   );
 
   const series = seriesById[art.seriesId];
-
-  // desktop magnifier — hover the artwork to inspect the palette-knife detail
   const imgRef = useRef(null);
-  const loupeRef = useRef(null);
-  const [loupeOn, setLoupeOn] = useState(false);
-  const moveLoupe = (e) => {
-    const img = imgRef.current, lp = loupeRef.current;
-    if (!img || !lp) return;
-    const r = img.getBoundingClientRect();
-    const x = e.clientX - r.left, y = e.clientY - r.top;
-    if (x < 0 || y < 0 || x > r.width || y > r.height) { if (loupeOn) setLoupeOn(false); return; }
-    if (!loupeOn) setLoupeOn(true);
-    lp.style.left = `${x}px`;
-    lp.style.top = `${y}px`;
-    lp.style.backgroundPosition = `${(x / r.width) * 100}% ${(y / r.height) * 100}%`;
-    lp.style.backgroundSize = `${r.width * 2.2}px ${r.height * 2.2}px`;
-  };
-  // reset the magnifier whenever the artwork changes
-  useEffect(() => { setLoupeOn(false); }, [art.uid]);
 
   return (
     <motion.div className="lb" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.4 }}>
@@ -155,28 +203,7 @@ function Lightbox({ items, index, setIndex, onClose }) {
         )}
 
         <AnimatePresence mode="popLayout" initial={false}>
-          <motion.figure
-            key={art.uid}
-            className="lb-figure"
-            {...bind()}
-            onMouseMove={moveLoupe}
-            onMouseLeave={() => setLoupeOn(false)}
-            data-cursor-hide="true"
-            style={{ x: drag.x, y: drag.y, touchAction: "none" }}
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 - Math.min(Math.abs(drag.y) / 2000, 0.06) }}
-            exit={{ opacity: 0, scale: 0.98 }}
-            transition={{ duration: 0.35, ease: EASE }}
-          >
-            <motion.img ref={imgRef} layoutId={`art-${art.uid}`} src={art.image} alt={art.title} transition={SPRING} draggable="false" />
-            <div
-              ref={loupeRef}
-              className={`lb-loupe ${loupeOn ? "is-on" : ""}`}
-              style={{ backgroundImage: `url("${art.image}")` }}
-              aria-hidden="true"
-            />
-            <span className="lb-hint mono">Hover to inspect</span>
-          </motion.figure>
+          <LightboxFigure key={art.uid} art={art} drag={drag} bind={bind} imgRef={imgRef} />
         </AnimatePresence>
 
         {hasNext && (
@@ -238,16 +265,55 @@ function Lightbox({ items, index, setIndex, onClose }) {
   );
 }
 
+/* --------------------------------------------------- responsive column count */
+function useColumnCount() {
+  const [cols, setCols] = useState(3);
+  useEffect(() => {
+    const mq2 = window.matchMedia("(max-width: 900px)");
+    const mq1 = window.matchMedia("(max-width: 560px)");
+    const update = () => setCols(mq1.matches ? 1 : mq2.matches ? 2 : 3);
+    update();
+    mq1.addEventListener("change", update);
+    mq2.addEventListener("change", update);
+    return () => {
+      mq1.removeEventListener("change", update);
+      mq2.removeEventListener("change", update);
+    };
+  }, []);
+  return cols;
+}
+
 /* --------------------------------------------------------------- gallery */
 export default function Gallery({ items, columns = 3 }) {
   const [index, setIndex] = useState(null);
   const open = index !== null;
+  const auto = useColumnCount();
+  const cols = Math.min(columns, auto);
+
+  // Distribute cards shortest-column-first so the wall has even feet and a
+  // deliberate rhythm (CSS multicol balances poorly / leaves ragged bottoms).
+  const buckets = useMemo(() => {
+    const b = Array.from({ length: cols }, () => ({ items: [], h: 0 }));
+    items.forEach((art, i) => {
+      const aspect = parseAspect(art.dimensions);
+      const h = 1 / aspect + 0.34; // frame height (1/aspect) + ~caption height
+      let t = 0;
+      for (let k = 1; k < b.length; k++) if (b[k].h < b[t].h) t = k;
+      b[t].items.push({ art, i });
+      b[t].h += h;
+    });
+    return b;
+  }, [items, cols]);
 
   return (
     <>
-      <div className="art-grid" style={{ "--cols": columns }}>
-        {items.map((art, i) => (
-          <Card key={art.uid} art={art} index={i} onOpen={setIndex} />
+      <div className="art-grid" style={{ "--cols": cols }}>
+        {buckets.map((col, ci) => (
+          <div className="art-col" key={ci}>
+            {col.items.map(({ art, i }) => (
+              <Card key={art.uid} art={art} index={i} onOpen={setIndex} />
+            ))}
+          </div>
         ))}
       </div>
 

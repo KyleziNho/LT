@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { imgProps, HERO_SIZES } from "../lib/img";
 
 /*
   PageHeroBg — a full-bleed painting behind a page hero, echoing the home hero.
@@ -17,7 +18,7 @@ export default function PageHeroBg({ image, tint = "#171027", position = "center
   return (
     <motion.div className="page-hero-bg" ref={ref} style={{ y, background: tint }} aria-hidden="true">
       <motion.img
-        src={image}
+        {...imgProps(image, HERO_SIZES, { targetW: 2000 })}
         alt=""
         fetchPriority="high"
         decoding="async"

@@ -1,7 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
 import { artistInfo } from "../data/artworks";
+import { ctaForPath } from "../data/cta";
 import { Reveal, LineReveal } from "./Reveal";
 import { Button } from "./UI";
+import "../styles/cta.css";
 
 const NAV = [
   { to: "/works", label: "Works" },
@@ -18,19 +21,61 @@ const SOCIAL = [
   ["YouTube", artistInfo.social.youtube],
 ];
 
-export default function Footer() {
+const EASE = [0.16, 1, 0.3, 1];
+
+// The contextual closing band. Content swaps per route; the dusk aesthetic and
+// structure stay constant so the change reads as intentional, not jarring.
+function ContextualCTA({ cta }) {
   return (
-    <footer className="footer surface-dark grain">
-      <div className="container footer-inner">
-        <div className="footer-cta">
-          <p className="eyebrow eyebrow-accent">Let's begin</p>
-          <h2 className="t-h1 footer-head">
-            <LineReveal lines={["Have a wall,", "a story, or a", "team in mind?"]} />
-          </h2>
-          <Reveal delay={0.2}>
-            <Button to="/contact" variant="outline" className="footer-btn">Start a conversation</Button>
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={cta.id}
+        className="footer-cta cta-band"
+        initial={{ opacity: 0, y: 14, filter: "blur(6px)" }}
+        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+        exit={{ opacity: 0, y: -8, filter: "blur(4px)" }}
+        transition={{ duration: 0.6, ease: EASE }}
+      >
+        <p className="eyebrow eyebrow-accent cta-eyebrow">{cta.eyebrow}</p>
+        <h2 className="t-h1 footer-head cta-head">
+          {cta.head.map((line, i) =>
+            line.accent ? (
+              <span className="cta-head-accent" key={i}>
+                <LineReveal lines={[line.t]} delay={i * 0.08} />
+              </span>
+            ) : (
+              <LineReveal lines={[line.t]} delay={i * 0.08} key={i} />
+            )
+          )}
+        </h2>
+        {cta.sub && (
+          <Reveal delay={0.18}>
+            <p className="cta-sub">{cta.sub}</p>
           </Reveal>
-        </div>
+        )}
+        <Reveal delay={cta.sub ? 0.28 : 0.2}>
+          <Button
+            to={cta.button.to}
+            variant="outline"
+            className="footer-btn cta-btn"
+            cursor={cta.button.cursor || "true"}
+          >
+            {cta.button.label}
+          </Button>
+        </Reveal>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
+export default function Footer() {
+  const { pathname } = useLocation();
+  const cta = ctaForPath(pathname);
+
+  return (
+    <footer className={`footer surface-dark grain${cta ? "" : " footer-nocta"}`}>
+      <div className="container footer-inner">
+        {cta && <ContextualCTA cta={cta} />}
 
         <div className="footer-grid">
           <div className="footer-col">

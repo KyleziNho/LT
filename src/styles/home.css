@@ -17,12 +17,15 @@
 @keyframes heroKen { from { transform: scale(1.06); } to { transform: scale(1.15); } }
 @media (prefers-reduced-motion: reduce) { .hero-slide.is-active img { animation: none; } }
 
-/* legibility scrim — darker at the bottom-left where the copy sits */
+/* legibility scrim — a soft pool of shade cupped at the bottom-left where the
+   copy sits, so the low-contrast grey sub-line reads at a glance, while the
+   middle of the frame stays luminous and the painting keeps glowing */
 .hero-scrim {
   position: absolute; inset: 0; pointer-events: none;
   background:
-    linear-gradient(to top, rgba(12,9,16,0.86) 0%, rgba(12,9,16,0.4) 32%, rgba(12,9,16,0.06) 60%, rgba(12,9,16,0.32) 100%),
-    linear-gradient(to right, rgba(12,9,16,0.55) 0%, rgba(12,9,16,0) 56%);
+    radial-gradient(58% 50% at 24% 82%, rgba(10,8,14,0.5), transparent 70%),
+    linear-gradient(102deg, rgba(10,8,14,0.58) 0%, rgba(10,8,14,0.14) 40%, transparent 60%),
+    linear-gradient(to top, rgba(10,8,14,0.88) 0%, rgba(10,8,14,0.52) 22%, rgba(10,8,14,0.16) 46%, rgba(10,8,14,0.04) 64%, rgba(10,8,14,0.3) 100%);
 }
 
 .hero-inner { position: relative; z-index: 3; width: 100%; max-width: 54rem; }
@@ -31,8 +34,9 @@
 .hero-head-accent { font-style: italic; color: #fff; }
 .hero-sub {
   max-width: 42ch; margin-top: clamp(1.3rem, 3vh, 2rem);
-  color: rgba(255,255,255,0.84); font-weight: 350;
-  text-shadow: 0 1px 22px rgba(0,0,0,0.4);
+  color: rgba(255,255,255,0.9); font-weight: 350;
+  /* a tight shadow for glance-crispness + a soft glow to seat it on the art */
+  text-shadow: 0 1px 2px rgba(0,0,0,0.45), 0 1px 22px rgba(0,0,0,0.4);
 }
 .hero-cta { display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; margin-top: clamp(1.6rem, 4vh, 2.4rem); }
 /* hero sits on imagery — force the outline/ghost buttons to read as light */
@@ -134,6 +138,15 @@
   background:
     linear-gradient(to top, rgba(13,11,7,0.92) 4%, rgba(13,11,7,0.4) 42%, rgba(13,11,7,0.08) 70%, rgba(13,11,7,0.3) 100%),
     linear-gradient(to top, color-mix(in oklab, var(--accent) 42%, transparent), transparent 52%);
+}
+/* the third card (Art Therapy) sits on a busy, bright corporate-session photo,
+   so its bottom-left label was less crisp than Collect / Commission. Give it a
+   deeper, better-shaped bottom pool and dial back the accent tint (which washed
+   out over the greens) so all three labels read equally cleanly. */
+.pathway.accent-aqua .pathway-scrim {
+  background:
+    linear-gradient(to top, rgba(11,9,6,0.95) 3%, rgba(11,9,6,0.55) 38%, rgba(11,9,6,0.16) 66%, rgba(11,9,6,0.32) 100%),
+    linear-gradient(to top, color-mix(in oklab, var(--accent) 32%, transparent), transparent 50%);
 }
 .pathway-content {
   position: relative; z-index: 2; height: 100%; min-height: clamp(23rem, 48vw, 33rem);

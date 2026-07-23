@@ -126,11 +126,11 @@ ul, ol { list-style: none; }
 
 ::selection { background: var(--accent); color: var(--paper); }
 
-/* thin warm scrollbar */
-::-webkit-scrollbar { width: 9px; height: 9px; }
-::-webkit-scrollbar-track { background: var(--paper); }
-::-webkit-scrollbar-thumb { background: var(--paper-3); border-radius: 20px; border: 2px solid var(--paper); }
-::-webkit-scrollbar-thumb:hover { background: var(--ink-3); }
+/* No custom ::-webkit-scrollbar: styling it forces a legacy always-on scrollbar
+   that reserves a pale (paper-coloured) gutter, which reads as a "cut off" strip
+   beside the full-bleed dark heroes. Letting macOS use its native OVERLAY
+   scrollbar (floats over content, auto-hides) keeps the painting hero edge-to-
+   edge. Scroll position is still shown by the top progress bar + Lenis. */
 
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
 

@@ -3,6 +3,11 @@
    Everything here is the vocabulary pages compose from — keep it consistent.
    ========================================================================== */
 
+/* shared motion token — the site's signature "quiet-luxury" ease. Several
+   components already reference var(--ease, ease) as a fallback; defining it
+   here resolves them all to the one confident curve. */
+:root { --ease: cubic-bezier(0.16, 1, 0.3, 1); }
+
 /* ------------------------------------------------------- shader field */
 .shader-field {
   position: absolute;
@@ -609,9 +614,14 @@ body.cursor-hidden .cursor-ring { opacity: 0 !important; }
 .page-hero-scrim {
   position: absolute; inset: 0; pointer-events: none;
   background:
-    linear-gradient(to top, rgba(12,9,16,0.92) 0%, rgba(12,9,16,0.55) 30%, rgba(12,9,16,0.16) 58%, rgba(12,9,16,0.42) 100%),
-    linear-gradient(to right, rgba(12,9,16,0.6) 0%, rgba(12,9,16,0) 56%),
-    radial-gradient(85% 75% at 18% 92%, rgba(12,9,16,0.62), transparent 72%);
+    /* a soft pool of shade cupped behind the bottom-left copy block — this is
+       what lifts the low-contrast grey lede without flattening the painting */
+    radial-gradient(56% 48% at 20% 84%, rgba(10,8,14,0.5), transparent 70%),
+    /* bottom-left directional wash */
+    linear-gradient(102deg, rgba(10,8,14,0.55) 0%, rgba(10,8,14,0.12) 42%, transparent 60%),
+    /* vertical: dark base for the type, a luminous window in the middle so the
+       art still glows, then a whisper of shade up top for the nav */
+    linear-gradient(to top, rgba(10,8,14,0.9) 0%, rgba(10,8,14,0.55) 24%, rgba(10,8,14,0.2) 48%, rgba(10,8,14,0.05) 66%, rgba(10,8,14,0.36) 100%);
 }
 /* top fade so the fixed nav always has something to sit on */
 .page-hero--image::before,
@@ -624,7 +634,11 @@ body.cursor-hidden .cursor-ring { opacity: 0 !important; }
 .page-hero--image .page-hero-eyebrow .eyebrow { color: rgba(255,255,255,0.82); }
 .page-hero--image h1 { color: #fff; text-shadow: 0 2px 44px rgba(0,0,0,0.45); }
 .page-hero--image .lede,
-.page-hero--image .page-hero-lede .lede { color: rgba(255,255,255,0.85); text-shadow: 0 1px 22px rgba(0,0,0,0.4); }
+.page-hero--image .page-hero-lede .lede {
+  color: rgba(255,255,255,0.9);
+  /* a tight shadow for glance-crispness + a soft glow to seat it on the art */
+  text-shadow: 0 1px 2px rgba(0,0,0,0.45), 0 1px 22px rgba(0,0,0,0.4);
+}
 .page-hero--image .btn-outline { --_fg: #fff; border-color: rgba(255,255,255,0.4); }
 .page-hero--image .btn-outline::before { background: #fff; }
 .page-hero--image .btn-outline:hover { color: #14110c; border-color: transparent; }
@@ -660,4 +674,65 @@ body.cursor-hidden .cursor-ring { opacity: 0 !important; }
   .nav-burger { display: block; }
   .nav-inner { margin-top: 0.5rem; padding-left: 1.1rem; }
   .footer-grid { grid-template-columns: 1fr 1fr; gap: 2.5rem 1.5rem; }
+}
+
+/* ================================================= INTERACTION POLISH
+   Quiet-luxury micro-detail on the shared vocabulary — physical button lift,
+   keyboard-visible focus, an accent underline that grows into form fields,
+   chip/link/faq feel. Tuned to the signature ease; reduced-motion respected.
+   (These live here, after the index.css base rules, so the cascade wins.) */
+
+/* buttons feel physical: a small lift into the light on hover, settle on press */
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: translateY(0) scale(0.97); }
+.btn:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--accent) 78%, #fff);
+  outline-offset: 3px;
+}
+.btn-ghost:hover .btn-arrow { transform: translateX(4px); }
+
+/* text links: reveal the underline on keyboard focus too, not just hover */
+.link:focus-visible { outline: none; }
+.link:focus-visible::after { transform: scaleX(1); transform-origin: left; }
+.link:focus-visible svg { transform: translateX(3px); }
+
+/* nav: hover pill + cta answer keyboard focus; a hair of lift + arrow nudge */
+.nav-link:focus-visible { outline: none; }
+.nav-link:focus-visible::before { transform: scale(1); opacity: 1; }
+.nav-cta:hover { transform: translateY(-1px); }
+.nav-cta:hover .btn-arrow { transform: translateX(3px); }
+.nav-cta:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--accent) 70%, #fff); outline-offset: 3px;
+}
+.nav-filter:focus-visible { outline: none; }
+.nav-filter:focus-visible .nav-filter-label {
+  text-decoration: underline; text-underline-offset: 3px;
+}
+
+/* chips + tags: subtle lift and a warmer border on hover, clear focus ring */
+.chip:hover { border-color: color-mix(in oklab, var(--ink) 30%, var(--line)); transform: translateY(-1px); }
+.chip:active { transform: translateY(0); }
+.chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.tag { transition: border-color 0.4s var(--ease-out), color 0.4s var(--ease-out), transform 0.4s var(--spring); }
+.tag:hover { border-color: color-mix(in oklab, var(--accent) 40%, var(--line)); color: var(--ink); }
+
+/* faq rows: keyboard focus keeps the global outline + warms the row & icon */
+.faq-q:focus-visible, .faq-q:hover { color: var(--accent-deep); }
+.faq-q:focus-visible .faq-icon::before, .faq-q:focus-visible .faq-icon::after,
+.faq-q:hover .faq-icon::before, .faq-q:hover .faq-icon::after { background: var(--accent-deep); }
+
+/* form fields: an accent underline grows from the left as you focus in — scoped
+   with :has so chip-only fields don't draw a stray baseline under the chips */
+.field:has(> input, > textarea, > select)::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+  background: var(--accent); transform: scaleX(0); transform-origin: left;
+  transition: transform 0.5s var(--ease-out); pointer-events: none;
+}
+.field:has(> input, > textarea, > select):focus-within::after { transform: scaleX(1); }
+
+/* footer links answer keyboard focus with the same nudge as hover */
+.footer-link:focus-visible { outline: none; color: var(--on-noir); transform: translateX(4px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .btn:hover, .nav-cta:hover, .chip:hover, .footer-link:focus-visible { transform: none; }
 }

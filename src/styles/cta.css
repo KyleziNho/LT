@@ -1,0 +1,92 @@
+/* =============================================================== CONTEXTUAL CTA
+   The closing dusk band, per-route. Loaded after components.css (imported from
+   Footer.jsx) so these rules win via the cascade — we vary content and add
+   quiet polish, we do NOT redesign the band. New class names, no collisions. */
+
+.cta-band {
+  position: relative;
+  z-index: 2;
+  max-width: 60rem;
+}
+
+.cta-eyebrow {
+  /* on the dark field the accent eyebrow should read as moonlit, not muddy */
+  color: color-mix(in oklab, var(--accent-deep) 40%, var(--on-noir));
+}
+
+.cta-head {
+  margin: 1.1rem 0 1.6rem;
+  text-wrap: balance;
+}
+
+/* the italic Fraunces accent line — the house signature, glowing faintly */
+.cta-head-accent {
+  display: block;
+  font-style: italic;
+  color: var(--on-noir);
+}
+.cta-head-accent .line-reveal-inner {
+  /* a barely-there lift so the accent word feels lit from within */
+  text-shadow: 0 0 40px color-mix(in oklab, var(--lilac, #d3c4f0) 45%, transparent);
+}
+
+.cta-sub {
+  max-width: 40rem;
+  margin-bottom: 2.1rem;
+  color: var(--on-noir-2);
+  font-size: var(--step-0);
+  line-height: 1.55;
+}
+
+/* ----- button polish: refined arrow motion on top of the outline fill ----- */
+.cta-btn {
+  --_pad: 1.05em;
+}
+.cta-btn .btn-arrow {
+  transition: transform 0.55s var(--spring);
+}
+.cta-btn:hover .btn-arrow,
+.cta-btn:focus-visible .btn-arrow {
+  transform: translate(3px, -3px);
+}
+
+/* when the band is suppressed (contact page) the footer opens with the columns,
+   so give the top a touch more air where the big headline used to sit */
+.footer-nocta { padding-top: clamp(3rem, 7vh, 6rem); }
+.footer-nocta .footer-grid { border-top: none; margin-top: 0; padding-top: 0; }
+
+/* --------------------------------------------------------------------------
+   Quiet tonal drift — an extremely soft dusk bloom behind the band. Museum
+   quiet: two low-opacity radial pools that breathe over ~26s. Sits under the
+   content (z-index 2) and above the flat noir. No colour shout, just depth. */
+.footer::before {
+  content: "";
+  position: absolute;
+  inset: -20% -10% auto -10%;
+  height: 70%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(42% 60% at 22% 8%, color-mix(in oklab, var(--noir-2) 90%, var(--violet)) 0%, transparent 70%),
+    radial-gradient(38% 55% at 82% 0%, color-mix(in oklab, var(--noir-2) 92%, var(--periwinkle, #9fb0e8)) 0%, transparent 72%);
+  opacity: 0.55;
+  animation: cta-drift 26s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+}
+
+@keyframes cta-drift {
+  0%   { transform: translate3d(0, 0, 0) scale(1);       opacity: 0.42; }
+  50%  { transform: translate3d(2.5%, 1.2%, 0) scale(1.06); opacity: 0.6; }
+  100% { transform: translate3d(-2%, -1%, 0) scale(1.03);  opacity: 0.5; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footer::before { animation: none; }
+  .cta-band { transition: none; }
+}
+
+/* --------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  .cta-sub { font-size: var(--step--1); margin-bottom: 1.7rem; }
+  .cta-head { margin: 0.9rem 0 1.3rem; }
+}

@@ -10,11 +10,15 @@
 }
 .at-hero-bg { position: absolute; inset: -8% -4%; z-index: 0; background: #14231f; }
 .at-hero-img { width: 100%; height: 100%; object-fit: cover; }
+/* the paddy hero is the brightest of the image heroes, so its grey sub-line was
+   the worst-case for contrast — a soft pool of shade cupped behind the
+   bottom-left copy carries it, while the middle of the field stays luminous */
 .at-hero-scrim {
   position: absolute; inset: 0; pointer-events: none;
   background:
-    linear-gradient(to top, rgba(9,16,14,0.92) 0%, rgba(9,16,14,0.55) 30%, rgba(9,16,14,0.18) 58%, rgba(9,16,14,0.4) 100%),
-    radial-gradient(80% 70% at 20% 92%, rgba(9,16,14,0.6), transparent 70%);
+    radial-gradient(56% 48% at 22% 84%, rgba(6,13,11,0.52), transparent 70%),
+    linear-gradient(100deg, rgba(6,13,11,0.5) 0%, rgba(6,13,11,0.12) 40%, transparent 60%),
+    linear-gradient(to top, rgba(6,13,11,0.9) 0%, rgba(6,13,11,0.54) 24%, rgba(6,13,11,0.18) 48%, rgba(6,13,11,0.04) 66%, rgba(6,13,11,0.34) 100%);
 }
 .at-hero-inner { position: relative; z-index: 3; width: 100%; }
 .at-hero-eyebrow { color: rgba(255,255,255,0.82); margin-bottom: clamp(1.4rem, 3vh, 2.4rem); }

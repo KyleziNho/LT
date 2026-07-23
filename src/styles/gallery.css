@@ -1,0 +1,132 @@
+/* ===========================================================================
+   gallery.css — GALLERY OVERRIDE LAYER
+   The base .art-card / .art-grid / .lb-* rules live in components.css (which is
+   off-limits to this agent). This file is imported AFTER components.css by the
+   gallery surface, so the cascade lets these rules win. Everything here is a
+   refinement of what already exists — a composed gallery-wall rhythm, a quieter
+   film-develop blur-up, and a more physical, museum-grade hover + lightbox.
+   =========================================================================== */
+
+/* ------------------------------------------------ balanced gallery-wall grid */
+/* Replace the browser's CSS multi-column (which balances poorly and leaves
+   ragged column bottoms) with real flex columns whose items are distributed
+   shortest-column-first in JS — even gutters, deliberate rhythm, even feet. */
+.art-grid {
+  columns: auto;              /* neutralise the components.css multicol */
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(1rem, 2.2vw, 2.1rem);
+}
+.art-col {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.7rem, 3.2vw, 3rem);
+}
+/* the flex column owns vertical spacing now, so drop the card's own margin */
+.art-col .art-card { margin-bottom: 0; }
+
+/* ---------------------------------------------------------- card: the frame */
+.art-card-frame {
+  /* a hair softer than default; the frame lifts on hover instead of the img */
+  box-shadow: 0 1px 2px rgba(23, 20, 15, 0.06);
+  transition: box-shadow 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+  transform: translateZ(0);
+}
+.art-card:hover .art-card-frame {
+  box-shadow:
+    0 2px 6px rgba(23, 20, 15, 0.06),
+    0 22px 48px -22px color-mix(in oklab, var(--accent, #1c1826) 42%, rgba(23, 20, 15, 0.5));
+}
+
+/* the film-develop blur-up: LQIP sits under the real image and fades as it
+   decodes, so paintings resolve like film rather than popping in. */
+.art-card-frame .art-lqip {
+  position: absolute; inset: 0; z-index: 0;
+  width: 100%; height: 100%; object-fit: cover;
+  transform: scale(1.06);              /* hide blur bleed at the edges */
+  filter: blur(12px) saturate(1.05);
+  opacity: 1; transition: opacity 0.8s var(--ease-out);
+}
+.art-card-frame .art-real {
+  position: relative; z-index: 1; opacity: 0;
+  transition: opacity 0.9s var(--ease-out);
+}
+.art-card-frame.is-loaded .art-lqip { opacity: 0; }
+.art-card-frame.is-loaded .art-real { opacity: 1; }
+
+/* image scale: slower, weightier, with real easing (not the default 1.045) */
+.art-card-frame .art-real {
+  transition: transform 1.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.9s var(--ease-out);
+}
+.art-card:hover .art-card-frame .art-real { transform: scale(1.055); }
+
+/* a hairline frame that warms to the series hue on hover (quiet, chromatic) */
+.art-card-frame::after {
+  transition: box-shadow 0.6s var(--ease-out);
+}
+.art-card:hover .art-card-frame::after {
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--accent, #1c1826) 26%, rgba(255, 255, 255, 0.32));
+}
+
+/* the existing radial glow now actually fires (Card sets --accent per series) */
+.art-card-glow { transition: opacity 0.7s var(--ease-out); }
+
+/* caption: a whisper of movement + the title easing toward the series hue */
+.art-card-meta { transition: transform 0.55s var(--ease-out); }
+.art-card:hover .art-card-meta { transform: translateY(-1px); }
+.art-card-title { transition: color 0.5s var(--ease-out); }
+.art-card:hover .art-card-title {
+  color: color-mix(in oklab, var(--accent, #1c1826) 34%, var(--ink));
+}
+
+/* ------------------------------------------------------------- the lightbox */
+/* cooler, deeper backdrop with a soft vignette (was a warm brown) — matches
+   the site's indigo-dusk family and lets the painting hold all the colour. */
+.lb-scrim {
+  background:
+    radial-gradient(120% 90% at 50% 42%, rgba(16, 12, 28, 0.82), rgba(9, 7, 18, 0.95) 78%);
+  -webkit-backdrop-filter: blur(10px) saturate(0.94);
+  backdrop-filter: blur(10px) saturate(0.94);
+}
+
+/* the framed painting sits on a whisper of light + a deep, soft cast shadow */
+.lb-figure img {
+  border-radius: 4px;
+  box-shadow:
+    0 2px 0 rgba(255, 255, 255, 0.04),
+    0 50px 130px -34px rgba(0, 0, 0, 0.78);
+}
+
+/* lightbox blur-up too, so a fresh painting resolves rather than flashing */
+.lb-figure .lb-lqip {
+  position: absolute; inset: 0; z-index: 0;
+  width: 100%; height: 100%; object-fit: contain;
+  filter: blur(16px); opacity: 0.9;
+  transition: opacity 0.6s var(--ease-out); pointer-events: none;
+}
+.lb-figure.is-loaded .lb-lqip { opacity: 0; }
+
+/* controls: a touch more refined easing + a hairline glass */
+.lb-nav, .lb-close {
+  border-color: rgba(255, 255, 255, 0.12);
+  transition: background 0.35s var(--ease-out), transform 0.55s var(--spring),
+    border-color 0.35s var(--ease-out);
+}
+.lb-nav:hover, .lb-close:hover { border-color: rgba(255, 255, 255, 0.22); }
+
+/* ---------------------------------------------------- reduced motion: quiet */
+@media (prefers-reduced-motion: reduce) {
+  .art-card-frame .art-real,
+  .art-card-frame .art-lqip,
+  .art-card:hover .art-card-frame .art-real,
+  .art-card:hover .art-card-frame,
+  .art-card-meta,
+  .lb-figure .lb-lqip {
+    transition-duration: 0.01ms !important;
+    transform: none !important;
+  }
+  .art-card:hover .art-card-frame .art-real { transform: none !important; }
+}

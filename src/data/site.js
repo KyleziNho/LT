@@ -350,7 +350,7 @@ export const blog = [
     slug: "women-who-win",
     title: "Featured by Women Who Win",
     date: "Nov 2021", tag: "Feature",
-    cover: "/images/journal/women-who-win.webp",
+    cover: "/images/journal/women-who-win-portrait.webp",
     excerpt: "My story, shared to inspire fellow artists and anyone contemplating a new journey of their own.",
     body: [
       "Thank you, Women Who Win, for featuring my story on your platforms. I hope my sharing gives inspiration and insight to readers and fellow artists \u2014 and benefits anyone who wishes to embark on a new journey of their own.",
