@@ -1,0 +1,5 @@
+/* ============================================================ WORKS PAGE */
+/* the category filter now lives in the expanding nav "shelf" (see Nav.jsx /
+   components.css .nav-tier). Here we only handle the gallery header. */
+.works-gallery { padding-top: clamp(2rem, 5vh, 4rem); }
+.works-count-line { margin-bottom: clamp(1.5rem, 3vh, 2.4rem); }

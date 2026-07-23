@@ -1,0 +1,36 @@
+/* =========================================================== SERIES PAGE */
+.series-hero { position: relative; min-height: 88svh; display: flex; align-items: flex-end; overflow: hidden; color: var(--on-noir); padding-bottom: clamp(3rem, 8vh, 6rem); }
+.series-hero-media { position: absolute; inset: -6% 0; z-index: 0; }
+.series-hero-media img { width: 100%; height: 100%; object-fit: cover; }
+.series-hero-scrim {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(15,12,8,0.35) 0%, transparent 30%, rgba(15,12,8,0.4) 60%, rgba(15,12,8,0.85) 100%);
+}
+.series-hero-inner { position: relative; z-index: 2; width: 100%; }
+.series-hero-eyebrow { color: rgba(226,216,255,0.8); margin-bottom: 1.5rem; }
+.series-hero-title { color: #fff; text-shadow: 0 4px 50px rgba(0,0,0,0.4); }
+.series-hero-title .line-reveal-inner { padding-right: 0.25em; }
+.series-hero-sub { font-family: var(--serif); font-style: italic; font-size: var(--step-2); color: rgba(226,216,255,0.9); margin-top: 1rem; }
+
+.series-intro { padding-block: clamp(4rem, 10vh, 8rem); }
+.series-intro-grid { display: grid; grid-template-columns: 0.6fr 2.4fr; gap: clamp(1.5rem, 5vw, 5rem); align-items: start; }
+@media (max-width: 860px) { .series-intro-grid { grid-template-columns: 1fr; gap: 1.5rem; } }
+.series-intro-text { color: var(--ink); font-weight: 400; max-width: 26ch; }
+.series-intro-text.balance { max-width: 30ch; }
+
+.series-next { padding: 0; overflow: hidden; }
+.series-next-link { display: grid; grid-template-columns: 1.4fr 1fr; align-items: center; gap: 2rem; min-height: 46vh; }
+.series-next-inner { padding-block: clamp(3rem, 8vh, 6rem); display: flex; flex-direction: column; gap: 0.8rem; }
+.series-next-label { color: var(--lilac); }
+.series-next-title { color: var(--on-noir); display: inline-flex; align-items: center; gap: 1rem; transition: color 0.4s, transform 0.5s var(--ease-out); }
+.series-next-title svg { transition: transform 0.5s var(--spring); }
+.series-next-link:hover .series-next-title { color: #f4b8dc; }
+.series-next-link:hover .series-next-title svg { transform: translateX(10px); }
+.series-next-sub { color: var(--on-noir-2); }
+.series-next-media { align-self: stretch; overflow: hidden; }
+.series-next-media img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s var(--ease-out); }
+.series-next-link:hover .series-next-media img { transform: scale(1.06); }
+@media (max-width: 720px) {
+  .series-next-link { grid-template-columns: 1fr; }
+  .series-next-media { display: none; }
+}

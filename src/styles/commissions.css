@@ -1,0 +1,39 @@
+/* ===================================================== COMMISSIONS PAGE */
+/* Page-specific layout only — all tokens, type, and component vocabulary
+   come from index.css + components.css. Accent theme: coral. */
+
+/* ---- hero ---- */
+.comm-hero-cta {
+  display: flex; align-items: center; gap: 1.6rem; flex-wrap: wrap;
+  margin-top: clamp(2rem, 4vh, 2.8rem);
+}
+.comm-hero-facts {
+  display: flex; flex-wrap: wrap; gap: 0.8rem 2.6rem;
+  margin-top: clamp(3.5rem, 8vh, 6rem); padding-top: 1.6rem;
+  border-top: 1px solid var(--line);
+}
+.comm-hero-facts .mono { color: var(--ink-3); }
+
+/* ---- testimonial ---- */
+.comm-voice-section { padding-block: clamp(4rem, 9vh, 8rem); }
+.comm-voice { max-width: 46rem; margin-inline: auto; }
+.comm-voice .divider-label { margin-bottom: clamp(2.2rem, 5vh, 3.5rem); }
+.comm-voice-quote { max-width: none; }
+
+/* ---- faq ---- */
+.comm-faq-grid {
+  display: grid; grid-template-columns: 0.8fr 1.2fr;
+  gap: clamp(2.5rem, 6vw, 6rem); align-items: start;
+}
+@media (max-width: 860px) { .comm-faq-grid { grid-template-columns: 1fr; gap: 2.5rem; } }
+.comm-faq-note { max-width: 30ch; margin-top: 0.5rem; }
+.comm-recent-link { color: var(--ink); white-space: nowrap; }
+
+/* ---- closing cta band ---- */
+.comm-cta {
+  position: relative; z-index: 3; text-align: center;
+  display: flex; flex-direction: column; align-items: center;
+  padding-block: clamp(1rem, 4vh, 3rem);
+}
+.comm-cta-head { margin: 1.6rem 0 1.8rem; }
+.comm-cta-lede { max-width: 40ch; margin-bottom: clamp(2rem, 4vh, 2.8rem); }

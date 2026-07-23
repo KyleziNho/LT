@@ -1,0 +1,107 @@
+/* ======================================================= ART THERAPY PAGE
+   Page-specific layout only — tokens and shared classes live in
+   index.css / components.css. Accent theme: teal ("tide").
+   ========================================================================== */
+
+/* ---- hero (dark, immersive — mirrors home hero layering) ---- */
+.at-hero {
+  position: relative; min-height: 100svh; display: flex; align-items: flex-end;
+  overflow: hidden; padding-bottom: clamp(3.5rem, 9vh, 7.5rem);
+}
+.at-hero-bg { position: absolute; inset: -8% -4%; z-index: 0; background: #14231f; }
+.at-hero-img { width: 100%; height: 100%; object-fit: cover; }
+.at-hero-scrim {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(to top, rgba(9,16,14,0.92) 0%, rgba(9,16,14,0.55) 30%, rgba(9,16,14,0.18) 58%, rgba(9,16,14,0.4) 100%),
+    radial-gradient(80% 70% at 20% 92%, rgba(9,16,14,0.6), transparent 70%);
+}
+.at-hero-inner { position: relative; z-index: 3; width: 100%; }
+.at-hero-eyebrow { color: rgba(255,255,255,0.82); margin-bottom: clamp(1.4rem, 3vh, 2.4rem); }
+.at-hero-head { color: #fff; text-shadow: 0 2px 44px rgba(0, 0, 0, 0.5); }
+.at-hero-accent {
+  font-style: italic;
+  color: color-mix(in oklab, var(--aqua) 45%, var(--on-noir));
+}
+.at-hero-sub {
+  max-width: 46ch; margin-top: clamp(1.4rem, 3vh, 2.2rem);
+  color: rgba(255,255,255,0.85); font-weight: 350; text-shadow: 0 1px 22px rgba(0,0,0,0.4);
+}
+.at-hero-cta {
+  display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap;
+  margin-top: clamp(1.8rem, 4vh, 2.8rem);
+}
+@media (max-width: 640px) {
+  .at-hero { min-height: 92svh; }
+  .at-hero-cta { flex-direction: column; align-items: flex-start; gap: 1rem; }
+}
+
+/* Nav inversion over this page's dark hero is handled centrally in Nav.jsx
+   (the `/art-therapy` route sets `.nav.is-dark`). */
+
+/* ---- method ---- */
+.at-method-split { align-items: start; }
+.at-steps { grid-template-columns: 1fr; gap: clamp(1.6rem, 3.5vh, 2.6rem); }
+.at-steps .step-text { max-width: 44ch; }
+.at-method-media { position: sticky; top: clamp(6rem, 12vh, 8rem); }
+.at-method-caption { margin-top: 1rem; font-size: 0.66rem; color: var(--ink-3); }
+@media (max-width: 860px) { .at-method-media { position: static; } }
+
+/* ---- audiences ---- */
+.at-card-note {
+  padding-top: 1.1rem; border-top: 1px solid var(--line);
+  color: var(--accent-deep); font-size: 0.68rem;
+}
+
+/* ---- credibility ---- */
+.at-cred { border-top: 1px solid var(--line-soft); }
+.at-cred-split { align-items: start; }
+.at-cred-head { margin: 1.1rem 0 2.2rem; max-width: 16ch; }
+.at-cred-list { max-width: 46ch; }
+.at-cred-stats {
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(2.2rem, 5vh, 3.5rem) 2rem;
+  padding: clamp(1.5rem, 3vw, 2.5rem) 0 0 clamp(0rem, 4vw, 3.5rem);
+  border-left: 1px solid var(--line);
+}
+@media (max-width: 860px) {
+  .at-cred-stats { border-left: none; border-top: 1px solid var(--line); padding: 2.5rem 0 0; }
+}
+
+/* ---- trusted by + HRD Corp ---- */
+.at-trust { border-top: 1px solid var(--line-soft); }
+.at-trust-label { color: var(--ink-3); margin-bottom: clamp(2rem, 4vh, 3rem); }
+.at-trust-marquee .marquee-item { color: var(--ink-2); }
+.at-hrd {
+  display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap;
+  margin-top: clamp(3rem, 6vh, 5rem);
+  padding: clamp(1.6rem, 3vw, 2.4rem) clamp(1.6rem, 3.5vw, 3rem);
+  border: 1px solid color-mix(in oklab, var(--aqua) 30%, var(--line));
+  border-left: 3px solid var(--aqua);
+  border-radius: var(--radius-lg);
+  background: color-mix(in oklab, var(--aqua) 6%, var(--paper-2));
+}
+.at-hrd-body { display: flex; flex-direction: column; gap: 0.8rem; max-width: 62ch; }
+.at-hrd-text { color: var(--ink-2); font-size: var(--step-1); font-weight: 350; line-height: 1.45; }
+.at-hrd-mark { color: var(--accent-deep); white-space: nowrap; }
+
+/* ---- booking cta band ---- */
+.at-cta { overflow: hidden; }
+.at-cta::before {
+  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: radial-gradient(90% 80% at 50% 115%, color-mix(in oklab, var(--aqua) 34%, transparent), transparent 62%);
+}
+.at-cta-inner {
+  position: relative; z-index: 3;
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  padding-block: clamp(1.5rem, 5vh, 4rem);
+}
+.at-cta-eyebrow { color: rgba(240, 233, 220, 0.6); }
+.at-cta-eyebrow::before { display: none; }
+.at-cta-head { margin: 1.4rem 0 1.8rem; color: var(--on-noir); }
+.at-cta-sub { max-width: 44ch; color: rgba(240, 233, 220, 0.72); font-weight: 350; }
+.at-cta-actions {
+  display: flex; flex-direction: column; align-items: center; gap: 1.2rem;
+  margin-top: clamp(2rem, 4.5vh, 3rem);
+}
+.at-cta-note { color: rgba(240, 233, 220, 0.45); font-size: 0.66rem; }

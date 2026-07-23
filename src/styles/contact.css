@@ -1,0 +1,140 @@
+/* ============================================================================
+   CONTACT — enquiry page layout
+   Composes the shared form + section kit; page-level layout only.
+   ========================================================================== */
+
+.contact-hero {
+  padding-bottom: clamp(4rem, 9vh, 8rem);
+}
+
+.contact-split {
+  align-items: start;
+  margin-top: clamp(2.2rem, 5.5vh, 4rem);
+}
+
+/* ---------------------------------------------------------- details column */
+.contact-details {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.4rem, 2.6vh, 2rem);
+}
+
+.contact-head {
+  max-width: 12ch;
+}
+
+.contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.05rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+}
+
+.contact-list li {
+  display: flex;
+  align-items: baseline;
+  gap: 1.4rem;
+}
+
+.contact-list-label {
+  flex: none;
+  width: 5.5rem;
+  font-size: 0.66rem;
+}
+
+.contact-list-value {
+  color: var(--ink-2);
+}
+
+.contact-social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem 1.6rem;
+  padding-top: 0.2rem;
+}
+
+.contact-social-link {
+  font-size: var(--step--1);
+  letter-spacing: 0.02em;
+}
+
+.contact-social-arrow {
+  display: inline-block;
+  font-size: 0.85em;
+  color: var(--ink-3);
+  transition: transform 0.4s var(--spring), color 0.3s;
+}
+
+.contact-social-link:hover .contact-social-arrow {
+  transform: translate(2px, -2px);
+  color: var(--accent-deep);
+}
+
+.contact-reassure {
+  max-width: 38ch;
+  line-height: 1.7;
+}
+
+/* ------------------------------------------------------------- form column */
+.contact-form-col {
+  padding-top: 0.4rem;
+}
+
+/* group label for the enquiry-type chips — mirrors .field label */
+.field .field-label {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.contact-hint {
+  color: var(--rose-deep);
+}
+
+.contact-submit {
+  display: flex;
+  align-items: center;
+  gap: 1.4rem;
+  flex-wrap: wrap;
+  padding-top: 0.4rem;
+}
+
+.contact-submit .form-note {
+  max-width: 24ch;
+  line-height: 1.5;
+}
+
+/* keep column height steady while the form → success swap animates */
+.contact-form-col .form-sent {
+  min-height: 24rem;
+  justify-content: center;
+}
+
+/* ------------------------------------------------------------ closing band */
+.contact-close {
+  padding-bottom: clamp(3.5rem, 8vh, 7rem);
+}
+
+.contact-close-note {
+  color: var(--ink-3);
+}
+
+/* ---------------------------------------------------------------- stacked */
+@media (max-width: 860px) {
+  .contact-form-col {
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--line-soft);
+  }
+
+  .contact-form-col .form,
+  .contact-form-col .form-sent {
+    padding-top: 2rem;
+  }
+
+  .contact-form-col .form-sent {
+    min-height: 0;
+  }
+}
