@@ -502,7 +502,10 @@ body.cursor-hidden .cursor-ring { opacity: 0 !important; }
     inset: calc(3.3rem + env(safe-area-inset-top, 0px)) 1.1rem 0.85rem;
     width: auto; height: auto;
     display: flex; align-items: center; justify-content: center;
+    overflow: clip;   /* keep a zoomed/panned painting inside its frame */
   }
+  .lb-img { transform-origin: center center; }
+  .lb-figure.is-zoomed { cursor: grab; touch-action: none; }
   .lb-track, .lb-figure { height: 100%; width: 100%; }
   /* flex-centre (not the base grid, whose auto row lets a tall figure size
      itself and escape the height cap) so the image's max-height:100% resolves */

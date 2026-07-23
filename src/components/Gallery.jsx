@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { useDrag } from "@use-gesture/react";
+import { useGesture } from "@use-gesture/react";
 import { seriesById } from "../data/artworks";
 import { parseAspect, priceLabel } from "../lib/util";
 import { imgProps, blurFor, sizedSrc, GRID_SIZES, LIGHTBOX_SIZES } from "../lib/img";
@@ -70,18 +70,19 @@ function Card({ art, index, onOpen }) {
 }
 
 /* ------------------------------------------------- lightbox figure (loupe) */
-/* Direction-aware slide between paintings: the incoming canvas enters from the
-   side you moved toward and the old one leaves the opposite way. Open/close
-   (dir 0) is a quiet fade + scale instead of a slide. NB: no layoutId here —
+/* A clean cross-dissolve between paintings — a gentle fade + a whisper of scale,
+   NOT a horizontal slide (on mobile the figure is full-width, so an x-slide made
+   the next canvas fly in from half a screen away — the "strange" motion). It's
+   non-directional, so tap and swipe read identically. NB: no layoutId here —
    tying the lightbox image to its grid card made navigation fly the next
-   painting in from wherever its card sat in the scrolled grid (the "clunk"). */
+   painting in from wherever its card sat in the scrolled grid. */
 const slideVariants = {
-  enter: (d) => (d === 0 ? { opacity: 0, scale: 0.94 } : { x: d > 0 ? "54%" : "-54%", opacity: 0 }),
-  center: { x: "0%", opacity: 1, scale: 1 },
-  exit: (d) => (d === 0 ? { opacity: 0, scale: 0.985 } : { x: d > 0 ? "-54%" : "54%", opacity: 0 }),
+  enter: { opacity: 0, scale: 1.035 },
+  center: { opacity: 1, scale: 1 },
+  exit: { opacity: 0, scale: 1.02 },
 };
 
-function LightboxFigure({ art, dir, imgRef }) {
+function LightboxFigure({ art, zoom, panning, imgRef }) {
   const loupeRef = useRef(null);
   const [loupeOn, setLoupeOn] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -100,18 +101,17 @@ function LightboxFigure({ art, dir, imgRef }) {
     lp.style.backgroundSize = `${r.width * 2.2}px ${r.height * 2.2}px`;
   };
 
+  const z = zoom || { s: 1, x: 0, y: 0 };
   return (
     <motion.figure
-      className={`lb-figure ${loaded ? "is-loaded" : ""}`}
-      custom={dir}
+      className={`lb-figure ${loaded ? "is-loaded" : ""} ${z.s > 1 ? "is-zoomed" : ""}`}
       variants={slideVariants}
       initial="enter"
       animate="center"
       exit="exit"
       transition={{
-        x: { type: "spring", stiffness: 330, damping: 36, mass: 0.9 },
-        opacity: { duration: 0.26, ease: EASE },
-        scale: { duration: 0.42, ease: EASE },
+        opacity: { duration: 0.34, ease: EASE },
+        scale: { duration: 0.5, ease: EASE },
       }}
       onMouseMove={moveLoupe}
       onMouseLeave={() => setLoupeOn(false)}
@@ -120,11 +120,17 @@ function LightboxFigure({ art, dir, imgRef }) {
       {blur && <img className="lb-lqip" src={blur} alt="" aria-hidden="true" draggable="false" />}
       <img
         ref={imgRef}
+        className="lb-img"
         {...imgProps(art.image, LIGHTBOX_SIZES, { targetW: 1400 })}
         alt={art.title}
         decoding="async"
         onLoad={() => setLoaded(true)}
         draggable="false"
+        style={{
+          transform: `translate3d(${z.x}px, ${z.y}px, 0) scale(${z.s})`,
+          transition: panning ? "none" : "transform 0.32s cubic-bezier(0.16,1,0.3,1)",
+          willChange: z.s > 1 ? "transform" : "auto",
+        }}
       />
       <div
         ref={loupeRef}
@@ -228,11 +234,8 @@ function StoryBlock({ story, enabled }) {
 function Lightbox({ items, index, setIndex, onClose }) {
   const art = items[index];
   const len = items.length;
-  // remember which way we're moving so the slide enters from the right side
-  const [dir, setDir] = useState(0);
   const go = useCallback(
     (d) => {
-      setDir(d);
       setIndex((i) => (i + d + len) % len); // wrap: past the end loops to the start
     },
     [len, setIndex]
@@ -255,29 +258,81 @@ function Lightbox({ items, index, setIndex, onClose }) {
     };
   }, [go, onClose]);
 
-  // drag to dismiss (vertical) / navigate (horizontal). The live offset lives on
-  // the track wrapper, so on release it springs back to 0 while the new painting
-  // slides in — the two compose into one natural "throw", not a jump.
+  const imgRef = useRef(null);
+  const narrow = useIsNarrow();
+
+  // ── zoom / pan ──────────────────────────────────────────────────────────
+  // Pinch or double-tap to zoom the painting; drag to pan while zoomed. Resets
+  // whenever the painting changes. `panning` kills the CSS transition so the
+  // image tracks the fingers 1:1 during a gesture, then eases on double-tap.
+  const [zoom, setZoom] = useState({ s: 1, x: 0, y: 0 });
+  const [panning, setPanning] = useState(false);
+  const lastTap = useRef(0);
+  // reset before paint so a newly-navigated painting never flashes zoomed
+  useLayoutEffect(() => { setZoom({ s: 1, x: 0, y: 0 }); setPanning(false); }, [art.uid]);
+
+  const clampPan = useCallback((s, x, y) => {
+    const img = imgRef.current;
+    if (!img) return { x, y };
+    const maxX = Math.max(0, (img.offsetWidth * (s - 1)) / 2);
+    const maxY = Math.max(0, (img.offsetHeight * (s - 1)) / 2);
+    return { x: Math.max(-maxX, Math.min(maxX, x)), y: Math.max(-maxY, Math.min(maxY, y)) };
+  }, []);
+
+  // drag to dismiss (vertical) / navigate (horizontal) at 1×; pan while zoomed.
+  // The nav offset lives on the track so on release it eases back while the next
+  // painting cross-dissolves in.
   const [drag, setDrag] = useState({ x: 0, y: 0 });
   const dragging = drag.x !== 0 || drag.y !== 0;
-  const bind = useDrag(
-    ({ last, movement: [mx, my], velocity: [vx], direction: [dx] }) => {
-      if (last) {
-        if (Math.abs(my) > 130 && Math.abs(my) > Math.abs(mx)) return onClose();
-        if ((Math.abs(mx) > 60 || vx > 0.35) && Math.abs(mx) > Math.abs(my)) {
-          go(dx < 0 ? 1 : -1); // wraps at either end
+  const bind = useGesture(
+    {
+      onDrag: ({ pinching, cancel, first, last, tap, movement: [mx, my], velocity: [vx], direction: [dx], memo }) => {
+        if (pinching) { cancel(); return; }
+        if (tap) {
+          if (!narrow) return;                 // desktop uses the hover loupe, not tap-zoom
+          const now = performance.now();
+          if (now - lastTap.current < 300) {   // double-tap → toggle zoom
+            lastTap.current = 0;
+            setPanning(false);
+            setZoom((z) => (z.s > 1 ? { s: 1, x: 0, y: 0 } : { s: 2.5, x: 0, y: 0 }));
+          } else {
+            lastTap.current = now;
+          }
+          return;
         }
-        setDrag({ x: 0, y: 0 });
-      } else {
-        setDrag({ x: mx, y: my });
-      }
+        if (zoom.s > 1) {                       // pan the zoomed canvas
+          if (first) setPanning(true);
+          const base = memo || { x: zoom.x, y: zoom.y };
+          const p = clampPan(zoom.s, base.x + mx, base.y + my);
+          setZoom((z) => ({ ...z, x: p.x, y: p.y }));
+          if (last) setPanning(false);
+          return base;
+        }
+        if (last) {                             // 1×: navigate / dismiss
+          if (Math.abs(my) > 130 && Math.abs(my) > Math.abs(mx)) return onClose();
+          if ((Math.abs(mx) > 60 || vx > 0.35) && Math.abs(mx) > Math.abs(my)) go(dx < 0 ? 1 : -1);
+          setDrag({ x: 0, y: 0 });
+        } else {
+          setDrag({ x: mx, y: my });
+        }
+      },
+      onPinch: ({ first, last, offset: [s] }) => {
+        if (first) setPanning(true);
+        setZoom((z) => {
+          if (s <= 1.02) return { s: 1, x: 0, y: 0 };
+          const p = clampPan(s, z.x, z.y);
+          return { s, x: p.x, y: p.y };
+        });
+        if (last) setPanning(false);
+      },
     },
-    { filterTaps: true, pointer: { touch: true } }
+    {
+      drag: { filterTaps: true, pointer: { touch: true } },
+      pinch: { scaleBounds: { min: 1, max: 4 }, rubberband: true, pointer: { touch: true } },
+    }
   );
 
   const series = seriesById[art.seriesId];
-  const imgRef = useRef(null);
-  const narrow = useIsNarrow();
 
   return (
     <motion.div className="lb" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.4 }}>
@@ -313,8 +368,8 @@ function Lightbox({ items, index, setIndex, onClose }) {
               ? { type: "tween", duration: 0 }
               : { type: "spring", stiffness: 340, damping: 38, mass: 0.9 }}
           >
-            <AnimatePresence custom={dir} mode="popLayout" initial={false}>
-              <LightboxFigure key={art.uid} art={art} dir={dir} imgRef={imgRef} />
+            <AnimatePresence mode="popLayout" initial={false}>
+              <LightboxFigure key={art.uid} art={art} zoom={zoom} panning={panning} imgRef={imgRef} />
             </AnimatePresence>
           </motion.div>
         </div>
