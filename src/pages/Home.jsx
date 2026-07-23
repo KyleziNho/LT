@@ -334,7 +334,7 @@ function TherapyStrip() {
           </div>
           <Reveal delay={0.1} className="therapy-media">
             <div className="frame frame-tall">
-              <img src={thumb("/images/artist/Lisa-Teo-3.jpg")} alt="Lisa Teo leading a session" loading="lazy" decoding="async" />
+              <img src={thumb("/images/artist/Lisa-Teo-Session.jpg")} alt="Lisa Teo leading an art therapy session" loading="lazy" decoding="async" />
             </div>
             <div className="therapy-badge">
               <span className="stat-value">200+</span>

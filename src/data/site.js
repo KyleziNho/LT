@@ -36,7 +36,7 @@ export const pathways = [
     to: "/art-therapy",
     cta: "Bring calm to your team",
     accent: "aqua",
-    image: "/images/artist/Lisa-Teo-3.jpg",
+    image: "/images/artist/Lisa-Teo-Session.jpg",
   },
 ];
 

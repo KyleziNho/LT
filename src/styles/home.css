@@ -111,7 +111,10 @@
 @media (max-width: 860px) {
   .statement-lead { grid-template-columns: 1fr; gap: 2.5rem; }
   .statement-media { order: -1; }
-  .statement-frame { aspect-ratio: 3 / 2; }
+  /* keep a portrait crop on mobile so the face isn't sliced off by a
+     landscape frame; bias the crop upward toward the head to be safe */
+  .statement-frame { aspect-ratio: 4 / 5; }
+  .statement-frame img { object-position: center 18%; }
 }
 
 /* ---- pathways (image-driven panels) ---- */
