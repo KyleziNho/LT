@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDrag } from "@use-gesture/react";
@@ -137,6 +137,93 @@ function LightboxFigure({ art, dir, imgRef }) {
   );
 }
 
+/* narrow = the mobile lightbox layout (the story is clamped + expandable there;
+   on desktop the side panel has room, so the full story just shows) */
+function useIsNarrow() {
+  const [narrow, setNarrow] = useState(
+    typeof window !== "undefined" ? window.matchMedia("(max-width: 820px)").matches : false
+  );
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 820px)");
+    const on = () => setNarrow(mq.matches);
+    on();
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  }, []);
+  return narrow;
+}
+
+/* ---------------------------------------------------- expandable story block */
+/* On mobile the story is clamped to 3 lines with a soft fade + a "Read more"
+   toggle. Expanding animates the REAL height (not a scale transform, which
+   would smear the text) with a gentle spring; because the sheet is flex, the
+   painting above rebalances in the same motion. The chevron morphs, the fade
+   dissolves. On desktop (enabled=false) the full story just renders. */
+const STORY_SPRING = { type: "spring", stiffness: 260, damping: 32, mass: 0.9 };
+
+function StoryBlock({ story, enabled }) {
+  const ref = useRef(null);
+  const [expanded, setExpanded] = useState(false);
+  const [m, setM] = useState({ collapsed: 0, full: 0, long: false });
+
+  const measure = useCallback(() => {
+    const el = ref.current;
+    if (!el) return;
+    const lh = parseFloat(getComputedStyle(el).lineHeight) || 20;
+    const collapsed = Math.round(lh * 3);
+    const full = el.scrollHeight;
+    setM({ collapsed, full, long: full > collapsed + 4 });
+  }, []);
+
+  // measure before paint (no flash), then again once web fonts settle / on resize
+  useLayoutEffect(() => { setExpanded(false); measure(); }, [story, enabled, measure]);
+  useEffect(() => {
+    if (!enabled) return;
+    let live = true;
+    document.fonts?.ready.then(() => { if (live) measure(); });
+    const onR = () => measure();
+    window.addEventListener("resize", onR);
+    return () => { live = false; window.removeEventListener("resize", onR); };
+  }, [enabled, measure]);
+
+  if (!enabled) return <p className="lb-story pretty">{story}</p>;
+
+  const clamped = m.long && !expanded;
+  return (
+    <div className="lb-story-block">
+      <motion.div
+        className={`lb-story-clip ${clamped ? "is-clamped" : ""}`}
+        initial={false}
+        animate={{ height: m.long ? (expanded ? m.full : m.collapsed) : "auto" }}
+        transition={STORY_SPRING}
+      >
+        <p ref={ref} className="lb-story pretty">{story}</p>
+      </motion.div>
+      {m.long && (
+        <button
+          className="lb-more"
+          type="button"
+          onClick={() => setExpanded((v) => !v)}
+          aria-expanded={expanded}
+          data-cursor="true"
+        >
+          <span className="lb-more-label">{expanded ? "Show less" : "Read more"}</span>
+          <motion.span
+            className="lb-more-chev"
+            aria-hidden="true"
+            animate={{ rotate: expanded ? 180 : 0 }}
+            transition={{ type: "spring", stiffness: 420, damping: 26 }}
+          >
+            <svg width="11" height="11" viewBox="0 0 12 12">
+              <path d="M2.5 4.5L6 8l3.5-3.5" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </motion.span>
+        </button>
+      )}
+    </div>
+  );
+}
+
 /* --------------------------------------------------------------- lightbox */
 function Lightbox({ items, index, setIndex, onClose }) {
   const art = items[index];
@@ -190,6 +277,7 @@ function Lightbox({ items, index, setIndex, onClose }) {
 
   const series = seriesById[art.seriesId];
   const imgRef = useRef(null);
+  const narrow = useIsNarrow();
 
   return (
     <motion.div className="lb" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.4 }}>
@@ -250,7 +338,7 @@ function Lightbox({ items, index, setIndex, onClose }) {
           </div>
           <StatusPill status={art.status} />
         </div>
-        <p className="lb-story pretty">{art.story}</p>
+        <StoryBlock story={art.story} enabled={narrow} />
         <dl className="lb-specs">
           <div><dt className="mono">Year</dt><dd>{art.year}</dd></div>
           <div><dt className="mono">Medium</dt><dd>{art.medium}</dd></div>

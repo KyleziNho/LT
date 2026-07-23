@@ -526,11 +526,26 @@ body.cursor-hidden .cursor-ring { opacity: 0 !important; }
   .lb-panel-top { align-items: center; }
   .lb-series { margin-bottom: 0.1rem; }
   .lb-title { font-size: clamp(1.5rem, 6vw, 1.95rem); }
-  /* the story stays secondary — clamped so the painting keeps the space */
-  .lb-story {
-    font-size: 0.9rem; line-height: 1.5; margin: 0.15rem 0 0.1rem;
-    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+  /* the story is secondary — clamped by JS-measured height (animatable) with a
+     soft fade + a Read-more toggle, so the painting keeps the space by default */
+  .lb-story { font-size: 0.9rem; line-height: 1.5; margin: 0; }
+  .lb-story-block { margin: 0.1rem 0; }
+  .lb-story-clip { position: relative; overflow: hidden; }
+  .lb-story-clip::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1.7em;
+    background: linear-gradient(180deg, rgba(34, 26, 58, 0), var(--noir-2) 92%);
+    opacity: 0; transition: opacity 0.35s var(--ease-out, ease); pointer-events: none;
   }
+  .lb-story-clip.is-clamped::after { opacity: 1; }
+  .lb-more {
+    display: inline-flex; align-items: center; gap: 0.42rem;
+    margin-top: 0.5rem; padding: 0.2rem 0;
+    font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--lilac); -webkit-tap-highlight-color: transparent;
+    transition: color 0.3s var(--ease-out, ease), opacity 0.2s var(--ease-out, ease);
+  }
+  .lb-more:active { opacity: 0.5; }
+  .lb-more-chev { display: inline-flex; margin-top: 1px; }
   /* specs collapse to one tidy inline row of label · value pairs */
   .lb-specs {
     display: flex; flex-wrap: wrap; gap: 0.3rem 1.1rem;
