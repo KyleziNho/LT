@@ -21,44 +21,53 @@
 }
 
 /* --------------------------------------------------------- route curtain */
-/* "The Fold" — two dusk panels meet at centre, hold a white mark, then part. */
-.curtain { position: fixed; inset: 0; z-index: 1500; pointer-events: none; overflow: hidden; }
+/* Liquid wipe — three dusk blades sweep up with an organic watercolour edge,
+   the white "Lisa Teo" signature breathes at centre, then the blades lift away. */
+.curtain { position: fixed; inset: 0; z-index: 1500; pointer-events: none; }
 .curtain:not(.is-active) { display: none; }
-.curtain-panel {
-  position: absolute; left: -1px; right: -1px; height: 51%;
-  will-change: transform; background: var(--noir);
+.curtain-blades { position: absolute; inset: 0; display: flex; }
+.curtain-blade {
+  position: relative; flex: 1; height: 100%;
+  background: var(--noir);
+  will-change: transform;
 }
-.curtain-panel--top { top: 0; }
-.curtain-panel--bottom { bottom: 0; }
-/* default indigo dusk (home / contact) — panels darken toward the seam for depth */
-.curtain-panel--top { background: linear-gradient(180deg, #201738, #2c2150); }
-.curtain-panel--bottom { background: linear-gradient(0deg, #201738, #2c2150); }
-/* per-destination — a single committed hue that frames the arriving page */
-.curtain[data-theme="reef"] .curtain-panel--top { background: linear-gradient(180deg, #0b232e, #16505c); }
-.curtain[data-theme="reef"] .curtain-panel--bottom { background: linear-gradient(0deg, #0b232e, #16505c); }
-.curtain[data-theme="sapphire"] .curtain-panel--top { background: linear-gradient(180deg, #0c1730, #203c78); }
-.curtain[data-theme="sapphire"] .curtain-panel--bottom { background: linear-gradient(0deg, #0c1730, #203c78); }
-.curtain[data-theme="blossom"] .curtain-panel--top { background: linear-gradient(180deg, #27101f, #5c2445); }
-.curtain[data-theme="blossom"] .curtain-panel--bottom { background: linear-gradient(0deg, #27101f, #5c2445); }
-.curtain[data-theme="violet"] .curtain-panel--top { background: linear-gradient(180deg, #1a1030, #37265c); }
-.curtain[data-theme="violet"] .curtain-panel--bottom { background: linear-gradient(0deg, #1a1030, #37265c); }
-
-/* centred stage holding the seam hairline + white mark */
-.curtain-stage { position: absolute; inset: 0; display: grid; place-items: center; z-index: 2; }
-.curtain-seam {
-  position: absolute; inset: 0; margin: auto;
-  width: clamp(140px, 24vw, 300px); height: 1px; transform-origin: center;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+/* default indigo dusk (home / contact) */
+.curtain-blade:nth-child(1) { background: linear-gradient(180deg, #241a40, #171027); }
+.curtain-blade:nth-child(2) { background: linear-gradient(180deg, #2c1f4a, #1c1436); }
+.curtain-blade:nth-child(3) { background: linear-gradient(180deg, #201738, #171027); }
+/* per-destination — blades wipe in the COMPLEMENT of the page's hero art */
+/* reef (teal) — complements the coral of Works / Series */
+.curtain[data-theme="reef"] .curtain-blade:nth-child(1) { background: linear-gradient(180deg, #123a44, #0b232e); }
+.curtain[data-theme="reef"] .curtain-blade:nth-child(2) { background: linear-gradient(180deg, #164e57, #0e2c36); }
+.curtain[data-theme="reef"] .curtain-blade:nth-child(3) { background: linear-gradient(180deg, #103640, #0b232e); }
+/* sapphire (blue) — complements the golden horse of Commissions */
+.curtain[data-theme="sapphire"] .curtain-blade:nth-child(1) { background: linear-gradient(180deg, #1a3060, #0c1730); }
+.curtain[data-theme="sapphire"] .curtain-blade:nth-child(2) { background: linear-gradient(180deg, #203c78, #101d3c); }
+.curtain[data-theme="sapphire"] .curtain-blade:nth-child(3) { background: linear-gradient(180deg, #172a58, #0c1730); }
+/* blossom (rose) — complements the green paddy of Art Therapy */
+.curtain[data-theme="blossom"] .curtain-blade:nth-child(1) { background: linear-gradient(180deg, #4a1d38, #27101f); }
+.curtain[data-theme="blossom"] .curtain-blade:nth-child(2) { background: linear-gradient(180deg, #5c2445, #311428); }
+.curtain[data-theme="blossom"] .curtain-blade:nth-child(3) { background: linear-gradient(180deg, #3f1a30, #27101f); }
+/* violet — the brand hue, for the mixed palette of About */
+.curtain[data-theme="violet"] .curtain-blade:nth-child(1) { background: linear-gradient(180deg, #2c1d4a, #1a1030); }
+.curtain[data-theme="violet"] .curtain-blade:nth-child(2) { background: linear-gradient(180deg, #37265c, #201540); }
+.curtain[data-theme="violet"] .curtain-blade:nth-child(3) { background: linear-gradient(180deg, #281a44, #1a1030); }
+/* organic rounded leading edge */
+.curtain-blade::before {
+  content: ""; position: absolute; left: -1px; right: -1px; top: -14vh; height: 16vh;
+  background: inherit; border-radius: 50% 50% 0 0 / 100% 100% 0 0;
 }
-.curtain-mark { position: relative; display: grid; place-items: center; will-change: transform, opacity; }
-/* the mark is pure white, haloed in the page's own art hue */
-.curtain-mark-lt { filter: drop-shadow(0 4px 22px rgba(150, 110, 220, 0.4)); }
-.curtain[data-theme="reef"] .curtain-mark-lt { filter: drop-shadow(0 4px 22px rgba(120, 220, 200, 0.4)); }
-.curtain[data-theme="sapphire"] .curtain-mark-lt { filter: drop-shadow(0 4px 22px rgba(230, 190, 110, 0.4)); }
-.curtain[data-theme="blossom"] .curtain-mark-lt { filter: drop-shadow(0 4px 22px rgba(244, 184, 220, 0.42)); }
-.curtain[data-theme="violet"] .curtain-mark-lt { filter: drop-shadow(0 4px 22px rgba(200, 170, 255, 0.4)); }
+.curtain-mark {
+  position: absolute; inset: 0; display: grid; place-items: center; z-index: 2;
+}
+/* the white signature glows in the page's OWN art hue (complement of its blades) */
+.curtain-mark-lt { filter: drop-shadow(0 3px 14px rgba(150, 110, 220, 0.3)); }
+.curtain[data-theme="reef"] .curtain-mark-lt { filter: drop-shadow(0 3px 14px rgba(240, 150, 110, 0.3)); }
+.curtain[data-theme="sapphire"] .curtain-mark-lt { filter: drop-shadow(0 3px 14px rgba(230, 190, 110, 0.3)); }
+.curtain[data-theme="blossom"] .curtain-mark-lt { filter: drop-shadow(0 3px 14px rgba(120, 220, 200, 0.3)); }
+.curtain[data-theme="violet"] .curtain-mark-lt { filter: drop-shadow(0 3px 14px rgba(230, 190, 110, 0.28)); }
 /* force the WHITE colourway — higher specificity than the base .logo-lockup
-   rules so the mark never falls back to ink over the dark panels */
+   rules so the signature never falls back to ink over the dark blades */
 .curtain .curtain-mark-lt .logo-ink { opacity: 0; }
 .curtain .curtain-mark-lt .logo-white { opacity: 1; }
 

@@ -4,18 +4,27 @@ import { motion, useAnimationControls } from "framer-motion";
 import { LogoMark } from "./Logo";
 
 /*
-  RouteCurtain — "The Fold". Two deep-dusk panels glide in to meet at the
-  horizontal centre-line, the WHITE LT monogram breathes at the seam over a
-  thin luminous hairline, then the panels part — top rising, bottom sinking —
-  to reveal the new page. A clean, symmetric, editorial wipe. Decoupled from
-  the router's AnimatePresence so it never fights the shared-element lightbox.
-
-  Per-destination colour is a single committed hue (set via data-theme in CSS),
-  in keeping with the site's "one confident colour at a time" restraint.
+  RouteCurtain — a liquid wipe that plays on every route change. Three deep
+  indigo-dusk blades sweep up to cover the screen (organic rounded leading
+  edge, echoing a watercolour wash), the "Lisa Teo" signature breathes at
+  center in white with a soft halo in the page's art hue, then the blades
+  lift away to reveal the new page. Decoupled from the router's
+  AnimatePresence so it never interferes with the shared-element lightbox
+  (portaled to <body>).
 */
-const COVER = [0.76, 0, 0.24, 1]; // strong ease for the panel glide
-const OUT = [0.65, 0, 0.35, 1];
+const EASE = [0.76, 0, 0.24, 1];
+const BLADES = 3;
 
+/*
+  The blades wipe in the COMPLEMENT of the destination's hero art; the signature
+  glows in the art's own hue (halo set per-theme in CSS). So the reveal always
+  frames, rather than fights, the page you're arriving at.
+    works   → coral art     → teal blades  + coral halo
+    series  → mixed         → teal blades  + coral halo
+    commissions → gold horse → blue blades + gold halo
+    art-therapy → green paddy → rose blades + mint halo
+    about   → mixed vibrant → violet blades + gold halo
+*/
 function themeFor(path) {
   if (path.startsWith("/works")) return "reef";
   if (path.startsWith("/series")) return "reef";
@@ -41,15 +50,14 @@ function shouldPlay(path) {
 
 export default function RouteCurtain() {
   const { pathname } = useLocation();
-  const top = useAnimationControls();
-  const bottom = useAnimationControls();
-  const mark = useAnimationControls();
-  const seam = useAnimationControls();
+  const controls = useAnimationControls();
+  const markControls = useAnimationControls();
   const [active, setActive] = useState(false);
   const prevPath = useRef(pathname);
 
   useEffect(() => {
-    // only play on a real path change — survives StrictMode's dev double-mount
+    // only play on a real path change — this survives StrictMode's double-mount
+    // (which would otherwise fire a spurious curtain on initial load in dev)
     if (prevPath.current === pathname) return;
     prevPath.current = pathname;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -58,55 +66,39 @@ export default function RouteCurtain() {
     let cancelled = false;
     (async () => {
       setActive(true);
-      mark.set({ opacity: 0, scale: 0.86, filter: "blur(6px)" });
-      seam.set({ scaleX: 0, opacity: 0 });
-      top.set({ y: "-101%" });
-      bottom.set({ y: "101%" });
-
-      // COVER — the two panels glide in to meet at the centre seam
-      await Promise.all([
-        top.start({ y: "0%", transition: { duration: 0.56, ease: COVER } }),
-        bottom.start({ y: "0%", transition: { duration: 0.56, ease: COVER } }),
-      ]);
+      // cover — blades rise from below with a slight per-blade stagger
+      markControls.set({ opacity: 0, scale: 0.9 });
+      await controls.start((i) => ({
+        y: "0%",
+        transition: { duration: 0.62, ease: EASE, delay: i * 0.06 },
+      }));
       if (cancelled) return;
-
-      // the hairline draws across the seam, then the white mark settles in
-      seam.start({ scaleX: 1, opacity: 1, transition: { duration: 0.5, ease: OUT } });
-      await mark.start({
-        opacity: 1,
-        scale: 1,
-        filter: "blur(0px)",
-        transition: { duration: 0.42, ease: [0.16, 1, 0.3, 1] },
-      });
-      if (cancelled) return;
+      await markControls.start({ opacity: 1, scale: 1, transition: { duration: 0.28 } });
       await new Promise((r) => setTimeout(r, 240));
-
-      // mark & seam fade before the split so nothing tears at the centre
-      mark.start({ opacity: 0, scale: 1.04, transition: { duration: 0.3, ease: "easeIn" } });
-      seam.start({ opacity: 0, transition: { duration: 0.25 } });
-
-      // REVEAL — panels part, unveiling the page beneath
-      await Promise.all([
-        top.start({ y: "-101%", transition: { duration: 0.6, ease: OUT, delay: 0.08 } }),
-        bottom.start({ y: "101%", transition: { duration: 0.6, ease: OUT, delay: 0.08 } }),
-      ]);
+      markControls.start({ opacity: 0, transition: { duration: 0.25 } });
+      // reveal — blades continue upward off-screen
+      await controls.start((i) => ({
+        y: "-100%",
+        transition: { duration: 0.6, ease: EASE, delay: i * 0.06 },
+      }));
       if (cancelled) return;
+      controls.set({ y: "100%" });
       setActive(false);
     })();
 
     return () => { cancelled = true; };
-  }, [pathname, top, bottom, mark, seam]);
+  }, [pathname, controls, markControls]);
 
   return (
     <div className={`curtain ${active ? "is-active" : ""}`} data-theme={themeFor(pathname)} aria-hidden="true">
-      <motion.div className="curtain-panel curtain-panel--top" initial={{ y: "-101%" }} animate={top} />
-      <motion.div className="curtain-panel curtain-panel--bottom" initial={{ y: "101%" }} animate={bottom} />
-      <div className="curtain-stage">
-        <motion.span className="curtain-seam" initial={{ scaleX: 0, opacity: 0 }} animate={seam} />
-        <motion.div className="curtain-mark" initial={{ opacity: 0, scale: 0.86 }} animate={mark}>
-          <LogoMark height={76} className="curtain-mark-lt" />
-        </motion.div>
+      <div className="curtain-blades">
+        {Array.from({ length: BLADES }).map((_, i) => (
+          <motion.div key={i} className="curtain-blade" custom={i} initial={{ y: "100%" }} animate={controls} />
+        ))}
       </div>
+      <motion.div className="curtain-mark" initial={{ opacity: 0 }} animate={markControls}>
+        <LogoMark height={60} className="curtain-mark-lt" />
+      </motion.div>
     </div>
   );
 }
