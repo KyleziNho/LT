@@ -117,6 +117,12 @@
 }
 .lb-nav:hover, .lb-close:hover { border-color: rgba(255, 255, 255, 0.22); }
 
+/* NOTE: the mobile lightbox redesign (painting-first scroll sheet + fixed nav
+   bar) lives in components.css, NOT here — for the Works route components.css
+   is imported AFTER this file, so same-property overrides placed here lose the
+   cascade. Only brand-new selectors would win from here, so the whole feature
+   is authored where it reliably applies. */
+
 /* ---------------------------------------------------- reduced motion: quiet */
 @media (prefers-reduced-motion: reduce) {
   .art-card-frame .art-real,

@@ -381,6 +381,14 @@ body.cursor-hidden .cursor-ring { opacity: 0 !important; }
 }
 .lb-scrim { position: absolute; inset: 0; background: rgba(15,12,8,0.86); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
 .lb-stage { position: relative; z-index: 2; display: grid; place-items: center; padding: clamp(3rem, 7vh, 6rem) clamp(1rem, 4vw, 4rem); min-width: 0; }
+/* the slide is clipped HERE, not on the stage — so the arrows (siblings of this
+   viewport) are never trimmed. overflow-x: clip keeps the horizontal slide from
+   spilling into a page scroll / onto the detail panel; the y axis stays visible
+   so the vertical drag-to-dismiss is free. */
+.lb-viewport { position: relative; width: 100%; height: 100%; display: grid; place-items: center; overflow-x: clip; }
+/* the sliding carousel layer + holder for the live drag transform */
+.lb-track { position: relative; display: grid; place-items: center; max-width: 100%; will-change: transform; }
+.lb-track .lb-figure { grid-area: 1 / 1; }
 .lb-figure { position: relative; max-width: 100%; max-height: 82vh; cursor: grab; }
 .lb-figure:active { cursor: grabbing; }
 .lb-figure img {
@@ -459,24 +467,56 @@ body.cursor-hidden .cursor-ring { opacity: 0 !important; }
 .lb-panel .btn-outline::before { background: var(--on-noir); }
 .lb-panel .btn-outline:hover { color: var(--noir); }
 .lb-series-link { color: var(--on-noir-2); }
+.lb-navbar { display: none; }   /* mobile-only; the @media below turns it on */
 
+/* mobile: a painting-first scroll sheet. The whole overlay becomes one
+   vertical scroll surface — the canvas owns the first screen, the write-up
+   scrolls in below it (nothing is ever cut off), and a fixed, thumb-reachable
+   bar handles prev/next (the side arrows are undiscoverable at this size). */
 @media (max-width: 820px) {
-  .lb { grid-template-columns: 1fr; grid-template-rows: minmax(0, 1fr) auto; }
-  .lb-stage { padding: 4rem 1rem 0.75rem; }
-  .lb-figure, .lb-figure img { max-height: 44vh; }
-  .lb-panel {
-    border-left: none; border-top: 1px solid var(--noir-line);
-    max-height: 52vh; gap: 1.1rem;
-    padding: 1.5rem 1.35rem calc(1.6rem + env(safe-area-inset-bottom, 0px));
+  .lb {
+    display: block;
+    grid-template-columns: none; grid-template-rows: none;
     overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
   }
-  /* let content flow & scroll rather than pinning the buttons to the bottom */
-  .lb-actions { margin-top: 1.3rem; }
+  .lb-scrim { position: fixed; }
+  .lb-stage {
+    min-height: 78svh;
+    padding: clamp(3.6rem, 8vh, 5rem) 1rem 1rem;
+    box-sizing: border-box;
+  }
+  .lb-figure, .lb-figure img { max-height: 68svh; }
+  .lb-panel {
+    border-left: none; border-top: 1px solid var(--noir-line);
+    max-height: none; overflow: visible; gap: 1.1rem;
+    padding: 1.6rem 1.35rem calc(6rem + env(safe-area-inset-bottom, 0px));
+  }
+  .lb-actions { margin-top: 1.4rem; }
   .lb-story { font-size: 0.96rem; line-height: 1.55; }
   .lb-specs { padding: 1.1rem 0; gap: 0.9rem 1.2rem; }
   .lb-nav { display: none; }
-  /* a soft fade at the panel's top edge cues that it scrolls */
-  .lb-panel { -webkit-mask-image: linear-gradient(180deg, transparent, #000 3%); mask-image: linear-gradient(180deg, transparent, #000 3%); }
+  .lb-counter { display: none; }   /* redundant with the fixed nav bar below */
+
+  /* the fixed control bar */
+  .lb-navbar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 6;
+    display: flex; align-items: center; justify-content: center;
+    gap: clamp(1.6rem, 6vw, 2.6rem);
+    padding: 0.6rem 1rem calc(0.6rem + env(safe-area-inset-bottom, 0px));
+    background: linear-gradient(180deg, rgba(12, 9, 20, 0), rgba(11, 8, 18, 0.9) 46%);
+    -webkit-backdrop-filter: blur(12px) saturate(0.95);
+    backdrop-filter: blur(12px) saturate(0.95);
+  }
+  .lb-navbar-btn {
+    width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center;
+    color: var(--on-noir); background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    transition: background 0.3s var(--ease-out, ease), transform 0.4s var(--spring, ease), opacity 0.3s;
+  }
+  .lb-navbar-btn:active { transform: scale(0.92); background: rgba(255, 255, 255, 0.16); }
+  .lb-navbar-btn:disabled { opacity: 0.28; pointer-events: none; }
+  .lb-navbar-count { min-width: 4.4ch; text-align: center; color: var(--on-noir); font-size: 0.9rem; letter-spacing: 0.04em; }
+  .lb-navbar-count span { color: rgba(240, 233, 220, 0.5); }
 }
 
 /* ================================================= REUSABLE SECTION KIT */

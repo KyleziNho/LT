@@ -70,7 +70,18 @@ function Card({ art, index, onOpen }) {
 }
 
 /* ------------------------------------------------- lightbox figure (loupe) */
-function LightboxFigure({ art, drag, bind, imgRef }) {
+/* Direction-aware slide between paintings: the incoming canvas enters from the
+   side you moved toward and the old one leaves the opposite way. Open/close
+   (dir 0) is a quiet fade + scale instead of a slide. NB: no layoutId here —
+   tying the lightbox image to its grid card made navigation fly the next
+   painting in from wherever its card sat in the scrolled grid (the "clunk"). */
+const slideVariants = {
+  enter: (d) => (d === 0 ? { opacity: 0, scale: 0.94 } : { x: d > 0 ? "54%" : "-54%", opacity: 0 }),
+  center: { x: "0%", opacity: 1, scale: 1 },
+  exit: (d) => (d === 0 ? { opacity: 0, scale: 0.985 } : { x: d > 0 ? "-54%" : "54%", opacity: 0 }),
+};
+
+function LightboxFigure({ art, dir, imgRef }) {
   const loupeRef = useRef(null);
   const [loupeOn, setLoupeOn] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -91,27 +102,28 @@ function LightboxFigure({ art, drag, bind, imgRef }) {
 
   return (
     <motion.figure
-      key={art.uid}
       className={`lb-figure ${loaded ? "is-loaded" : ""}`}
-      {...bind()}
+      custom={dir}
+      variants={slideVariants}
+      initial="enter"
+      animate="center"
+      exit="exit"
+      transition={{
+        x: { type: "spring", stiffness: 330, damping: 36, mass: 0.9 },
+        opacity: { duration: 0.26, ease: EASE },
+        scale: { duration: 0.42, ease: EASE },
+      }}
       onMouseMove={moveLoupe}
       onMouseLeave={() => setLoupeOn(false)}
       data-cursor-hide="true"
-      style={{ x: drag.x, y: drag.y, touchAction: "none" }}
-      initial={{ opacity: 0, scale: 0.98 }}
-      animate={{ opacity: 1, scale: 1 - Math.min(Math.abs(drag.y) / 2000, 0.06) }}
-      exit={{ opacity: 0, scale: 0.98 }}
-      transition={{ duration: 0.4, ease: EASE }}
     >
       {blur && <img className="lb-lqip" src={blur} alt="" aria-hidden="true" draggable="false" />}
-      <motion.img
+      <img
         ref={imgRef}
-        layoutId={`art-${art.uid}`}
         {...imgProps(art.image, LIGHTBOX_SIZES, { targetW: 1400 })}
         alt={art.title}
         decoding="async"
         onLoad={() => setLoaded(true)}
-        transition={SPRING}
         draggable="false"
       />
       <div
@@ -128,16 +140,15 @@ function LightboxFigure({ art, drag, bind, imgRef }) {
 /* --------------------------------------------------------------- lightbox */
 function Lightbox({ items, index, setIndex, onClose }) {
   const art = items[index];
-  const hasPrev = index > 0;
-  const hasNext = index < items.length - 1;
+  const len = items.length;
+  // remember which way we're moving so the slide enters from the right side
+  const [dir, setDir] = useState(0);
   const go = useCallback(
-    (dir) => {
-      setIndex((i) => {
-        const n = i + dir;
-        return n < 0 || n > items.length - 1 ? i : n;
-      });
+    (d) => {
+      setDir(d);
+      setIndex((i) => (i + d + len) % len); // wrap: past the end loops to the start
     },
-    [items.length, setIndex]
+    [len, setIndex]
   );
 
   useEffect(() => {
@@ -157,15 +168,17 @@ function Lightbox({ items, index, setIndex, onClose }) {
     };
   }, [go, onClose]);
 
-  // drag to dismiss / navigate
+  // drag to dismiss (vertical) / navigate (horizontal). The live offset lives on
+  // the track wrapper, so on release it springs back to 0 while the new painting
+  // slides in — the two compose into one natural "throw", not a jump.
   const [drag, setDrag] = useState({ x: 0, y: 0 });
+  const dragging = drag.x !== 0 || drag.y !== 0;
   const bind = useDrag(
     ({ last, movement: [mx, my], velocity: [vx], direction: [dx] }) => {
       if (last) {
-        if (Math.abs(my) > 140 && Math.abs(my) > Math.abs(mx)) return onClose();
-        if ((Math.abs(mx) > 120 || vx > 0.5) && Math.abs(mx) > Math.abs(my)) {
-          if (dx < 0 && hasNext) go(1);
-          else if (dx > 0 && hasPrev) go(-1);
+        if (Math.abs(my) > 130 && Math.abs(my) > Math.abs(mx)) return onClose();
+        if ((Math.abs(mx) > 60 || vx > 0.35) && Math.abs(mx) > Math.abs(my)) {
+          go(dx < 0 ? 1 : -1); // wraps at either end
         }
         setDrag({ x: 0, y: 0 });
       } else {
@@ -196,21 +209,31 @@ function Lightbox({ items, index, setIndex, onClose }) {
 
       {/* tapping the empty stage (anywhere but the image/controls) closes */}
       <div className="lb-stage" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
-        {hasPrev && (
-          <button className="lb-nav lb-prev" onClick={() => go(-1)} data-cursor="true" aria-label="Previous">
-            <svg width="26" height="26" viewBox="0 0 26 26"><path d="M16 4L7 13l9 9" stroke="currentColor" strokeWidth="1.3" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>
-          </button>
-        )}
+        <button className="lb-nav lb-prev" onClick={() => go(-1)} data-cursor="true" aria-label="Previous">
+          <svg width="26" height="26" viewBox="0 0 26 26"><path d="M16 4L7 13l9 9" stroke="currentColor" strokeWidth="1.3" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        </button>
 
-        <AnimatePresence mode="popLayout" initial={false}>
-          <LightboxFigure key={art.uid} art={art} drag={drag} bind={bind} imgRef={imgRef} />
-        </AnimatePresence>
+        {/* the clip lives on this inner viewport (not the stage), so the slide
+            never spills sideways while the arrows — siblings of it — stay whole */}
+        <div className="lb-viewport">
+          <motion.div
+            className="lb-track"
+            {...bind()}
+            style={{ touchAction: "none" }}
+            animate={{ x: drag.x, y: drag.y, scale: 1 - Math.min(Math.abs(drag.y) / 2200, 0.05) }}
+            transition={dragging
+              ? { type: "tween", duration: 0 }
+              : { type: "spring", stiffness: 340, damping: 38, mass: 0.9 }}
+          >
+            <AnimatePresence custom={dir} mode="popLayout" initial={false}>
+              <LightboxFigure key={art.uid} art={art} dir={dir} imgRef={imgRef} />
+            </AnimatePresence>
+          </motion.div>
+        </div>
 
-        {hasNext && (
-          <button className="lb-nav lb-next" onClick={() => go(1)} data-cursor="true" aria-label="Next">
-            <svg width="26" height="26" viewBox="0 0 26 26"><path d="M10 4l9 9-9 9" stroke="currentColor" strokeWidth="1.3" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>
-          </button>
-        )}
+        <button className="lb-nav lb-next" onClick={() => go(1)} data-cursor="true" aria-label="Next">
+          <svg width="26" height="26" viewBox="0 0 26 26"><path d="M10 4l9 9-9 9" stroke="currentColor" strokeWidth="1.3" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        </button>
       </div>
 
       <motion.aside
@@ -261,6 +284,30 @@ function Lightbox({ items, index, setIndex, onClose }) {
           )}
         </div>
       </motion.aside>
+
+      {/* mobile-only control bar — thumb-reachable prev/next + counter, so you
+          never depend on an undiscoverable swipe to move between paintings */}
+      <div className="lb-navbar" role="group" aria-label="Gallery navigation">
+        <button
+          className="lb-navbar-btn"
+          onClick={() => go(-1)}
+          data-cursor="true"
+          aria-label="Previous painting"
+        >
+          <svg width="22" height="22" viewBox="0 0 26 26"><path d="M16 4L7 13l9 9" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        </button>
+        <span className="lb-navbar-count mono">
+          {String(index + 1).padStart(2, "0")} <span>/ {String(items.length).padStart(2, "0")}</span>
+        </span>
+        <button
+          className="lb-navbar-btn"
+          onClick={() => go(1)}
+          data-cursor="true"
+          aria-label="Next painting"
+        >
+          <svg width="22" height="22" viewBox="0 0 26 26"><path d="M10 4l9 9-9 9" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        </button>
+      </div>
     </motion.div>
   );
 }
