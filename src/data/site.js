@@ -55,43 +55,85 @@ export const therapy = {
   eyebrow: "Guided Drawing Art Therapy",
   headline: "A quieter kind of clarity.",
   intro:
-    "A body-based art therapy method — two hands drawing at once, eyes closed, following the breath. No skill required, only willingness.",
+    "Take a moment from your daily stress to reconnect with your inner balance and peace — a body-based art therapy method drawn with both hands, eyes closed, following the breath. No skill required, only willingness.",
+  // the important distinction the live site leads with
+  distinction:
+    "This is therapeutic in nature — a guided practice for emotional release and grounding, not a recreational art class or a casual team-building activity.",
+  // words participants use to describe how they leave a session
+  outcomes: ["Calm", "Joyful", "Positive", "Grounded"],
   method: [
     {
-      step: "Ground",
-      text: "We begin with breath and rhythm. Both hands move on the page together, eyes closed, releasing the need to make something 'good'.",
+      step: "Sensory-based drawing",
+      text: "Drawing with eyes closed, using both hands in a quiet environment, reduces distraction and opens a direct line to your inner thoughts, emotions and body sensations.",
     },
     {
-      step: "Express",
-      text: "Repeated gestures — arcs, circles, lines — surface what's held in the body. The drawing becomes a mirror, not a masterpiece.",
+      step: "Emotional release & clarity",
+      text: "Alternating cycles of breathing, drawing and reflection use movement to release negative emotions and clear away mental clutter.",
     },
     {
-      step: "Integrate",
-      text: "We open our eyes and reflect. Participants leave feeling relieved, balanced, and quietly joyful — a reset they can carry back to their desk.",
+      step: "Nervous system regulation",
+      text: "Rhythmic, repetitive mark-making stimulates positive sensory feedback that calms and regulates an overstimulated nervous system.",
+    },
+    {
+      step: "Brain recalibration",
+      text: "The sensorimotor feedback loop encourages new neurological pathways — a chance to rewrite your biography toward a more authentic, alive sense of self.",
     },
   ],
   audiences: [
     {
-      title: "Corporate Wellness",
-      text: "Two-hour team workshops that lower stress and rebuild connection — materials provided, you supply the room.",
-      note: "HRDC claimable · from MYR 100/pax",
+      title: "Corporate wellness",
+      text: "A meaningful reset for teams in high-stress environments — participants identify and release anxiety, and return to work calm and re-centred.",
+      note: "2-hour sessions · on-site",
     },
     {
-      title: "Group Sessions",
-      text: "Guided Drawing circles for organisations, communities, and private groups seeking a shared reset.",
-      note: "Up to 25 per session",
+      title: "Beyond team-building",
+      text: "A genuine alternative to conventional team-building, claimable through HRDC training budgets for Malaysian companies.",
+      note: "HRDC claimable",
     },
     {
-      title: "One-to-One",
-      text: "Private sessions for working professionals and teenagers navigating stress, change, or burnout.",
-      note: "Ages 12+",
+      title: "Individuals",
+      text: "Private one-to-one sessions for anyone seeking emotional release and grounding away from the noise of daily life.",
+      note: "One-to-one",
     },
   ],
+  // tiered corporate pricing, verbatim from lisateoart.com
+  pricing: {
+    tiers: [
+      { range: "20–80 participants", price: "130" },
+      { range: "81–100 participants", price: "120" },
+      { range: "100 or more", price: "100" },
+    ],
+    unit: "MYR / participant",
+    includes: [
+      "Crayons, finger paints & large-format paper — all materials provided",
+      "A two-hour guided session led by Lisa",
+      "Up to 25 participants per session, with multiple sessions in a day",
+      "Half-day, full-day & HRDC-claimable formats on request",
+    ],
+    provides: "You provide the venue, tables and chairs — Lisa brings the rest.",
+  },
   credentials: [
     "Certified in Guided Drawing — Institute for Sensorimotor Art Therapy, Australia",
     "HRD Corp certified trainer (2024)",
     "Sensory-based method: breathing, drawing & reflection to regulate the nervous system",
-    "Programmes for AXA, Coca-Cola, Ogilvy, Marsh, Sunway & Taylor's University",
+    "Programmes for AXA, Coca-Cola, Ogilvy, Marsh, Sunway, Taylor's & SEGi",
+  ],
+  testimonials: [
+    {
+      quote:
+        "A little stressed and pressured before the session — but it felt therapeutic during, and I left with a childlike joy!",
+      name: "Natasha S.",
+    },
+    {
+      quote:
+        "Lisa is experienced and patient in guiding us through the art. So well guided by her.",
+      name: "Elynn K.",
+    },
+    {
+      quote:
+        "Before the session I felt gloomy, during it I was excited, and afterwards I felt genuinely happy.",
+      name: "Lufti M.",
+    },
   ],
 };
 

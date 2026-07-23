@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { artistInfo } from "../data/artworks";
 import { Reveal, LineReveal } from "./Reveal";
 import { Button } from "./UI";
-import { LogoMark } from "./Logo";
 
 const NAV = [
   { to: "/works", label: "Works" },

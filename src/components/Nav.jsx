@@ -79,7 +79,7 @@ export default function Nav() {
         <div className="nav-inner">
           <div className="nav-row">
             <Link to="/" className="nav-logo" data-cursor="Home" aria-label="Lisa Teo — home">
-              <Logo size={30} />
+              <Logo height={34} />
             </Link>
 
             <nav className="nav-links" aria-label="Primary">

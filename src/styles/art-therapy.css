@@ -39,6 +39,27 @@
 /* Nav inversion over this page's dark hero is handled centrally in Nav.jsx
    (the `/art-therapy` route sets `.nav.is-dark`). */
 
+/* ---- lead / distinction ---- */
+.at-lead { border-bottom: 1px solid var(--line-soft); }
+.at-lead-inner { display: flex; flex-direction: column; align-items: flex-start; }
+.at-lead-head {
+  margin: 1.1rem 0 0; max-width: 24ch;
+  color: var(--ink); font-weight: 350;
+}
+.at-outcomes {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 0.7rem 1.1rem;
+  margin-top: clamp(1.8rem, 4vh, 2.8rem);
+}
+.at-outcomes-label { color: var(--ink-3); font-size: 0.66rem; }
+.at-outcomes-row { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.at-outcome {
+  font-family: var(--serif); font-style: italic; font-size: var(--step-1);
+  color: var(--accent-deep);
+  padding: 0.28em 0.85em; border-radius: 100px;
+  border: 1px solid color-mix(in oklab, var(--aqua) 34%, var(--line));
+  background: color-mix(in oklab, var(--aqua) 7%, var(--paper));
+}
+
 /* ---- method ---- */
 .at-method-split { align-items: start; }
 .at-steps { grid-template-columns: 1fr; gap: clamp(1.6rem, 3.5vh, 2.6rem); }
@@ -47,61 +68,144 @@
 .at-method-caption { margin-top: 1rem; font-size: 0.66rem; color: var(--ink-3); }
 @media (max-width: 860px) { .at-method-media { position: static; } }
 
+/* ---- session gallery (soft tinted band frames the real photos) ---- */
+.at-gallery {
+  padding-block: clamp(3.5rem, 9vh, 6.5rem); overflow: hidden;
+  background: color-mix(in oklab, var(--aqua) 5%, var(--paper-2));
+  border-block: 1px solid var(--line-soft);
+}
+.at-gallery .section-head { margin-bottom: clamp(2rem, 5vh, 3.4rem); }
+.at-gallery-strip {
+  display: flex; gap: clamp(0.8rem, 1.6vw, 1.4rem);
+  padding-inline: clamp(1.2rem, 5vw, 4rem);
+  overflow-x: auto; scroll-snap-type: x mandatory;
+  scrollbar-width: none; -webkit-overflow-scrolling: touch;
+}
+.at-gallery-strip::-webkit-scrollbar { display: none; }
+.at-gallery-item {
+  position: relative; flex: 0 0 auto; scroll-snap-align: center;
+  width: clamp(15rem, 34vw, 26rem); aspect-ratio: 4 / 3;
+  border-radius: var(--radius-lg); overflow: hidden; background: var(--paper-2);
+}
+.at-gallery-item.is-tall { aspect-ratio: 3 / 4; width: clamp(12rem, 26vw, 20rem); }
+.at-gallery-item img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform 0.9s var(--ease, ease);
+}
+.at-gallery-item:hover img { transform: scale(1.05); }
+@media (max-width: 640px) {
+  .at-gallery-item { width: 78vw; }
+  .at-gallery-item.is-tall { width: 62vw; }
+}
+
 /* ---- audiences ---- */
 .at-card-note {
   padding-top: 1.1rem; border-top: 1px solid var(--line);
   color: var(--accent-deep); font-size: 0.68rem;
 }
 
-/* ---- credibility ---- */
-.at-cred { border-top: 1px solid var(--line-soft); }
-.at-cred-split { align-items: start; }
-.at-cred-head { margin: 1.1rem 0 2.2rem; max-width: 16ch; }
-.at-cred-list { max-width: 46ch; }
-.at-cred-stats {
-  grid-template-columns: repeat(2, 1fr);
-  gap: clamp(2.2rem, 5vh, 3.5rem) 2rem;
-  padding: clamp(1.5rem, 3vw, 2.5rem) 0 0 clamp(0rem, 4vw, 3.5rem);
+/* ---- pricing ---- */
+.at-pricing { border-top: 1px solid var(--line-soft); }
+.at-pricing-split { align-items: start; gap: clamp(2.5rem, 6vw, 5rem); }
+.at-pricing-head { margin: 1.1rem 0 1.4rem; max-width: 14ch; }
+.at-pricing-lede { max-width: 42ch; color: var(--ink-2); font-weight: 350; }
+.at-pricing-list { max-width: 44ch; margin-top: clamp(1.8rem, 4vh, 2.6rem); }
+.at-pricing-provide { margin-top: 1.6rem; color: var(--ink-3); font-size: 0.68rem; }
+
+.at-tiers { display: flex; flex-direction: column; gap: 0.9rem; }
+.at-tier {
+  position: relative; display: grid;
+  grid-template-columns: 1fr auto; align-items: center; gap: 0.3rem 1.5rem;
+  padding: clamp(1.4rem, 3vw, 2rem) clamp(1.5rem, 3.2vw, 2.2rem);
+  border: 1px solid var(--line); border-radius: var(--radius-lg);
+  background: var(--paper); transition: border-color 0.4s ease, transform 0.4s ease;
+}
+.at-tier:hover { transform: translateY(-2px); border-color: color-mix(in oklab, var(--aqua) 40%, var(--line)); }
+.at-tier.is-best {
+  border-color: color-mix(in oklab, var(--aqua) 50%, var(--line));
+  background: color-mix(in oklab, var(--aqua) 7%, var(--paper));
+}
+.at-tier-flag {
+  position: absolute; top: -0.62rem; right: clamp(1.5rem, 3.2vw, 2.2rem);
+  font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--paper); background: var(--accent-deep);
+  padding: 0.3em 0.75em; border-radius: 100px;
+}
+.at-tier-range { grid-column: 1; color: var(--ink-2); font-size: 0.72rem; align-self: center; }
+.at-tier-price { grid-column: 2; grid-row: 1; display: inline-flex; align-items: baseline; gap: 0.28rem; }
+.at-tier-cur { font-family: var(--mono); font-size: 0.78rem; color: var(--ink-3); }
+.at-tier-num { font-family: var(--serif); font-size: clamp(2.4rem, 5vw, 3.1rem); line-height: 0.9; color: var(--ink); }
+.at-tier-unit { grid-column: 2; grid-row: 2; justify-self: end; color: var(--ink-3); font-size: 0.6rem; }
+.at-tier-cta { margin-top: 0.6rem; }
+@media (max-width: 860px) { .at-pricing-split { display: flex; flex-direction: column; } }
+
+/* ---- proof (credentials · stats · logos · HRD) ---- */
+.at-proof { border-top: 1px solid var(--line-soft); }
+.at-proof-top {
+  display: grid; grid-template-columns: 1.15fr 0.85fr; align-items: center;
+  gap: clamp(2.5rem, 6vw, 5rem);
+}
+.at-proof-head { margin: 1.1rem 0 1.8rem; max-width: 15ch; }
+.at-proof-list { max-width: 46ch; }
+/* HRD note — real certification seal + copy (replaces the old empty box) */
+.at-hrd-note {
+  display: flex; align-items: center; gap: clamp(1rem, 2.5vw, 1.6rem);
+  margin-top: clamp(1.8rem, 4vh, 2.6rem); max-width: 52ch;
+}
+.at-hrd-seal {
+  flex: 0 0 auto; width: clamp(64px, 8vw, 84px); height: auto; display: block;
+}
+.at-hrd-note-body { display: flex; flex-direction: column; align-items: flex-start; gap: 0.55rem; }
+.at-hrd-note-text { color: var(--ink-2); font-size: var(--step-0); line-height: 1.5; }
+.at-hrd-badge {
+  display: inline-block; align-self: flex-start;
+  color: var(--accent-deep); font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 0.28em 0.7em; border-radius: 100px;
+  border: 1px solid color-mix(in oklab, var(--aqua) 34%, var(--line));
+  background: color-mix(in oklab, var(--aqua) 7%, var(--paper));
+}
+@media (max-width: 420px) { .at-hrd-note { flex-direction: column; align-items: flex-start; } }
+/* stats — even 3-up on desktop, no wrap, aligned baselines */
+.at-proof-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1rem, 2.5vw, 2rem);
+  padding-left: clamp(0rem, 3vw, 3rem);
   border-left: 1px solid var(--line);
 }
+.at-stat { display: flex; flex-direction: column; gap: 0.5rem; }
+.at-stat-value {
+  font-family: var(--serif); font-weight: 400; line-height: 0.9;
+  font-size: clamp(2rem, 3.4vw, 3rem); color: var(--ink); white-space: nowrap;
+}
+.at-stat-label { font-size: 0.72rem; line-height: 1.35; color: var(--ink-3); }
 @media (max-width: 860px) {
-  .at-cred-stats { border-left: none; border-top: 1px solid var(--line); padding: 2.5rem 0 0; }
+  .at-proof-top { grid-template-columns: 1fr; gap: 2.5rem; }
+  .at-proof-stats { border-left: none; border-top: 1px solid var(--line); padding: 2rem 0 0; }
 }
+@media (max-width: 400px) {
+  .at-proof-stats { grid-template-columns: 1fr; gap: 1.4rem; }
+}
+/* logo marquee */
+.at-proof-marquee { margin-top: clamp(3.5rem, 8vh, 6rem); }
+.at-trust-label { color: var(--ink-3); text-align: center; margin-bottom: clamp(1.8rem, 4vh, 2.6rem); }
+.at-proof-marquee .marquee-item { color: var(--ink-2); }
 
-/* ---- trusted by + HRD Corp ---- */
-.at-trust { border-top: 1px solid var(--line-soft); }
-.at-trust-label { color: var(--ink-3); margin-bottom: clamp(2rem, 4vh, 3rem); }
-.at-trust-marquee .marquee-item { color: var(--ink-2); }
-.at-hrd {
-  display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap;
-  margin-top: clamp(3rem, 6vh, 5rem);
-  padding: clamp(1.6rem, 3vw, 2.4rem) clamp(1.6rem, 3.5vw, 3rem);
-  border: 1px solid color-mix(in oklab, var(--aqua) 30%, var(--line));
-  border-left: 3px solid var(--aqua);
-  border-radius: var(--radius-lg);
-  background: color-mix(in oklab, var(--aqua) 6%, var(--paper-2));
+/* ---- testimonials ---- */
+.at-voices { border-top: 1px solid var(--line-soft); }
+.at-voice-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1rem, 2.2vw, 1.8rem);
 }
-.at-hrd-body { display: flex; flex-direction: column; gap: 0.8rem; max-width: 62ch; }
-.at-hrd-text { color: var(--ink-2); font-size: var(--step-1); font-weight: 350; line-height: 1.45; }
-.at-hrd-mark { color: var(--accent-deep); white-space: nowrap; }
-
-/* ---- booking cta band ---- */
-.at-cta { overflow: hidden; }
-.at-cta::before {
-  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background: radial-gradient(90% 80% at 50% 115%, color-mix(in oklab, var(--aqua) 34%, transparent), transparent 62%);
+.at-voice {
+  display: flex; flex-direction: column; justify-content: space-between; gap: 1.6rem;
+  padding: clamp(1.6rem, 3vw, 2.4rem);
+  border: 1px solid var(--line); border-radius: var(--radius-lg);
+  background: color-mix(in oklab, var(--aqua) 4%, var(--paper));
 }
-.at-cta-inner {
-  position: relative; z-index: 3;
-  display: flex; flex-direction: column; align-items: center; text-align: center;
-  padding-block: clamp(1.5rem, 5vh, 4rem);
+.at-voice-quote {
+  font-family: var(--serif); font-size: var(--step-1); font-weight: 350;
+  line-height: 1.5; color: var(--ink); text-wrap: pretty;
 }
-.at-cta-eyebrow { color: rgba(240, 233, 220, 0.6); }
-.at-cta-eyebrow::before { display: none; }
-.at-cta-head { margin: 1.4rem 0 1.8rem; color: var(--on-noir); }
-.at-cta-sub { max-width: 44ch; color: rgba(240, 233, 220, 0.72); font-weight: 350; }
-.at-cta-actions {
-  display: flex; flex-direction: column; align-items: center; gap: 1.2rem;
-  margin-top: clamp(2rem, 4.5vh, 3rem);
-}
-.at-cta-note { color: rgba(240, 233, 220, 0.45); font-size: 0.66rem; }
+.at-voice-name { color: var(--accent-deep); font-size: 0.66rem; }
+.at-voices .section-head { margin-bottom: clamp(2rem, 5vh, 3.2rem); }
+@media (max-width: 860px) { .at-voice-grid { grid-template-columns: 1fr; } }

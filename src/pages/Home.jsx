@@ -332,15 +332,6 @@ function TherapyStrip() {
               <Button to="/art-therapy" className="therapy-btn">Explore art therapy</Button>
             </Reveal>
           </div>
-          <Reveal delay={0.1} className="therapy-media">
-            <div className="frame frame-tall">
-              <img src={thumb("/images/artist/Lisa-Teo-Session.jpg")} alt="Lisa Teo leading an art therapy session" loading="lazy" decoding="async" />
-            </div>
-            <div className="therapy-badge">
-              <span className="stat-value">200+</span>
-              <span className="stat-label">sessions delivered</span>
-            </div>
-          </Reveal>
         </div>
       </div>
 
