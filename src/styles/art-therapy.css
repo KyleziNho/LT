@@ -311,7 +311,13 @@
 .at-stat-label { font-size: 0.72rem; line-height: 1.35; color: var(--ink-3); }
 @media (max-width: 860px) {
   .at-proof-top { grid-template-columns: 1fr; gap: 2.2rem; }
-  .at-proof-figure { max-width: 24rem; }
+  /* centre the portrait and let the 3/4 ratio size it from its width — the
+     desktop `height:100%` (to fill the 2-col row) would otherwise resolve the
+     width FROM the stretched height and overflow the viewport, which is what
+     made the page jog left/right on scroll */
+  .at-proof-figure { max-width: 24rem; width: 100%; margin-inline: auto; }
+  .at-proof-figure .frame { height: auto; }
+  .at-proof-caption { text-align: center; }
 }
 @media (max-width: 400px) { .at-proof-stats { grid-template-columns: 1fr; gap: 1.4rem; } }
 .at-proof-marquee { margin-top: clamp(3.5rem, 8vh, 6rem); }
