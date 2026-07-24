@@ -517,9 +517,13 @@ body.cursor-hidden .cursor-ring { opacity: 0 !important; }
   }
   .lb-figure .lb-lqip { object-fit: contain; }
 
-  /* the detail card — a bottom sheet that hugs its content */
+  /* the detail card — a bottom sheet that hugs its content. The cap is high
+     enough that a long (Read-more) card's COLLAPSED content still fits fully on
+     the smallest phones (measured worst ≈61% of a 667px screen) instead of
+     pushing the action button / series link off-screen; short cards are
+     content-sized and unaffected. Only an expanded long story scrolls. */
   .lb-panel {
-    flex: 0 0 auto; max-height: 46%;
+    flex: 0 0 auto; max-height: 66%;
     border-left: none; border-top: 1px solid var(--noir-line);
     border-radius: 20px 20px 0 0;
     background: var(--noir-2);

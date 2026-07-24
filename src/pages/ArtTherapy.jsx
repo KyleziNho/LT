@@ -1,29 +1,22 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import TrustMarquee from "../components/TrustMarquee";
-import { Reveal, RevealGroup, RevealItem, LineReveal } from "../components/Reveal";
+import { Reveal, RevealGroup, RevealItem } from "../components/Reveal";
 import { Button } from "../components/UI";
 import { therapy, stats } from "../data/site";
 import "../styles/art-therapy.css";
 
 const EASE = [0.16, 1, 0.3, 1];
 const ENQUIRY = "/contact?subject=Art%20therapy%20enquiry";
+const pad = (n) => String(n).padStart(2, "0");
 
-/* ---- three headline proof-points — grounded in site data ---- */
+/* three honest proof-points — none of them repeats the HRD seal or the logo
+   strip below, so nothing on the page is said twice */
 const sessionStat = stats.find((s) => s.label === "Guided Drawing sessions");
-const credStats = [
-  { value: sessionStat?.value || "200+", label: "Guided Drawing sessions" },
-  { value: "2024", label: "HRD Corp certified" },
-  { value: "25", label: "Max per session" },
-];
-
-/* real corporate-session photos scraped from lisateoart.com/art-therapy */
-const gallery = [
-  { src: "/images/therapy/session-2.jpg", tall: true, alt: "A participant drawing with both hands during a Guided Drawing session" },
-  { src: "/images/therapy/session-1.jpg", alt: "A corporate team seated at long tables mid-session" },
-  { src: "/images/therapy/method-2.jpg", alt: "Large-format paper covered in expressive marks" },
-  { src: "/images/therapy/session-4.jpg", alt: "Participants reflecting on their drawings" },
-  { src: "/images/therapy/method-3.jpg", tall: true, alt: "Finger-painting in colour on large-format paper" },
+const proofStats = [
+  { value: sessionStat?.value || "200+", label: "Sessions guided" },
+  { value: "25", label: "People per session" },
+  { value: "2h", label: "Per guided session" },
 ];
 
 /* -------------------------------------------------------------- hero */
@@ -51,12 +44,15 @@ function TherapyHero() {
           {therapy.eyebrow}
         </motion.p>
 
-        <h1 className="t-hero at-hero-head">
-          <LineReveal lines={["A quieter kind"]} delay={0.12} duration={0.7} inView={false} />
-          <span className="at-hero-accent">
-            <LineReveal lines={["of clarity."]} delay={0.3} duration={0.7} inView={false} />
-          </span>
-        </h1>
+        <motion.h1
+          className="t-hero at-hero-head"
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.85, ease: EASE, delay: 0.12 }}
+        >
+          Take a moment from your daily stress to reconnect with your{" "}
+          <span className="at-hero-accent">inner balance and peace.</span>
+        </motion.h1>
 
         <motion.p
           className="at-hero-sub body-lg pretty"
@@ -73,29 +69,37 @@ function TherapyHero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: EASE, delay: 0.55 }}
         >
-          <Button to={ENQUIRY} variant="outline">Bring calm to your team</Button>
-          <Button to={ENQUIRY} variant="ghost" arrow>Book an individual session</Button>
+          <Button to={ENQUIRY} variant="outline">Book a discovery call</Button>
+          <Button to={ENQUIRY} variant="ghost" arrow>Enquire about a session</Button>
         </motion.div>
       </motion.div>
+
+      <span className="at-hero-cue" aria-hidden="true">
+        <span className="at-hero-cue-line" />
+      </span>
     </section>
   );
 }
 
 /* --------------------------------------------------------------- lead */
-/* the distinction the live site leads with + the words people leave feeling */
+/* the payoff and the distinction the live site leads with, plus the words
+   people use for how they leave a session */
 function Lead() {
   return (
     <section className="section-tight at-lead accent-aqua">
       <div className="container at-lead-inner">
         <Reveal><p className="eyebrow eyebrow-row">The practice</p></Reveal>
         <Reveal delay={0.06}>
-          <p className="t-h2 balance at-lead-head">{therapy.distinction}</p>
+          <p className="t-h2 balance at-lead-head">{therapy.introMore}</p>
         </Reveal>
-        <Reveal delay={0.14} className="at-outcomes">
+        <Reveal delay={0.12}>
+          <p className="at-lead-note pretty">{therapy.distinction}</p>
+        </Reveal>
+        <Reveal delay={0.18} className="at-outcomes">
           <span className="mono at-outcomes-label">Participants leave feeling</span>
           <span className="at-outcomes-row">
-            {therapy.outcomes.map((w) => (
-              <span className="at-outcome" key={w}>{w}</span>
+            {therapy.outcomes.map((w, i) => (
+              <span className="at-outcome" style={{ "--i": i }} key={w}>{w}</span>
             ))}
           </span>
         </Reveal>
@@ -105,84 +109,40 @@ function Lead() {
 }
 
 /* ------------------------------------------------------------ method */
+/* "What is Guided Drawing?" — a two-column head (words + the room, shot for
+   real) over a 2x2 grid of the four verbatim components */
 function Method() {
   return (
     <section className="section at-method accent-aqua" id="method">
       <div className="container">
-        <div className="section-head-row">
-          <div className="section-head wide">
+        <div className="at-method-head">
+          <div className="at-method-headline">
             <Reveal><p className="eyebrow eyebrow-row">The method</p></Reveal>
             <Reveal delay={0.05}>
-              <h2 className="t-h1 balance">Two hands, eyes closed, following the breath.</h2>
+              <h2 className="t-h1 balance at-method-title">What is Guided Drawing?</h2>
             </Reveal>
           </div>
-        </div>
-
-        <div className="split split-narrow at-method-split">
-          <RevealGroup className="steps at-steps" stagger={0.1}>
-            {therapy.method.map((m, i) => (
-              <RevealItem className="step" key={m.step}>
-                <span className="step-num">0{i + 1}</span>
-                <h3 className="step-title">{m.step}</h3>
-                <p className="step-text pretty">{m.text}</p>
-              </RevealItem>
-            ))}
-          </RevealGroup>
-
-          <Reveal delay={0.15} className="at-method-media">
-            <div className="frame frame-tall">
-              <img src="/images/artist/Lisa-Teo-Session.jpg" alt="Lisa Teo leading a corporate Guided Drawing art therapy session" />
-            </div>
-            <p className="mono at-method-caption">Guided Drawing · a live corporate session</p>
+          <Reveal delay={0.1} className="at-method-lede-wrap">
+            <p className="at-method-lede pretty">
+              A sensory-based method. You draw on large sheets of paper with both
+              hands and your eyes closed, in a rhythm that follows the breath, then
+              pause to notice what shifts. No skill is needed, only a willingness to begin.
+            </p>
           </Reveal>
         </div>
-      </div>
-    </section>
-  );
-}
 
-/* ------------------------------------------------- session gallery */
-function SessionGallery() {
-  return (
-    <section className="at-gallery accent-aqua">
-      <div className="container">
-        <div className="section-head-row">
-          <div className="section-head">
-            <Reveal><p className="eyebrow eyebrow-row">In the room</p></Reveal>
-            <Reveal delay={0.05}><h2 className="t-h2">What a session looks like.</h2></Reveal>
-          </div>
-        </div>
-      </div>
-      <RevealGroup className="at-gallery-strip" stagger={0.08}>
-        {gallery.map((g) => (
-          <RevealItem className={`at-gallery-item${g.tall ? " is-tall" : ""}`} key={g.src}>
-            <img src={g.src} alt={g.alt} loading="lazy" decoding="async" />
-          </RevealItem>
-        ))}
-      </RevealGroup>
-    </section>
-  );
-}
-
-/* ------------------------------------------------------- who it's for */
-function Audiences() {
-  return (
-    <section className="section at-audience accent-aqua">
-      <div className="container">
-        <div className="section-head-row">
-          <div className="section-head">
-            <Reveal><p className="eyebrow eyebrow-row">Who it&rsquo;s for</p></Reveal>
-            <Reveal delay={0.05}><h2 className="t-h1">Three ways to sit down.</h2></Reveal>
-          </div>
-        </div>
-
-        <RevealGroup className="cards" stagger={0.1}>
-          {therapy.audiences.map((a, i) => (
-            <RevealItem className="card" key={a.title}>
-              <span className="card-index">0{i + 1}</span>
-              <h3 className="card-title">{a.title}</h3>
-              <p className="card-text pretty">{a.text}</p>
-              <p className="mono at-card-note">{a.note}</p>
+        <RevealGroup className="at-move-grid" stagger={0.1}>
+          {therapy.method.map((m, i) => (
+            <RevealItem className="at-move" key={m.step}>
+              <div className="at-move-media">
+                <img src={m.img} alt={m.alt} loading="lazy" decoding="async" />
+                <span className="at-move-num">{pad(i + 1)}</span>
+              </div>
+              <div className="at-move-body">
+                <span className="at-move-seam" aria-hidden="true" />
+                <h3 className="at-move-title">{m.step}</h3>
+                <p className="at-move-text pretty">{m.text}</p>
+              </div>
             </RevealItem>
           ))}
         </RevealGroup>
@@ -191,36 +151,59 @@ function Audiences() {
   );
 }
 
-/* ------------------------------------------------------------ pricing */
+/* ------------------------------------------------------- who it's for */
+function Audiences() {
+  return (
+    <section className="section at-audience accent-aqua">
+      <div className="container at-audience-grid">
+        <div className="at-audience-head">
+          <Reveal><p className="eyebrow eyebrow-row">The right fit</p></Reveal>
+          <Reveal delay={0.05}><h2 className="t-h1 balance">Who is this for?</h2></Reveal>
+        </div>
+
+        <RevealGroup as="ul" className="at-aud-list" stagger={0.09}>
+          {therapy.audiences.map((a, i) => (
+            <RevealItem as="li" className="at-aud-row" key={a}>
+              <span className="at-aud-idx mono">{pad(i + 1)}</span>
+              <span className="at-aud-text">{a}</span>
+            </RevealItem>
+          ))}
+        </RevealGroup>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------------------------------------- session details + pricing */
 function Pricing() {
-  const { pricing } = therapy;
+  const { pricing, session } = therapy;
   return (
     <section className="section at-pricing accent-aqua" id="pricing">
       <div className="container">
-        <div className="split at-pricing-split">
-          <div className="at-pricing-copy">
-            <Reveal><p className="eyebrow eyebrow-row">Pricing</p></Reveal>
-            <Reveal delay={0.05}>
-              <h2 className="t-h1 balance at-pricing-head">Simple, transparent rates.</h2>
-            </Reveal>
-            <Reveal delay={0.1}>
-              <p className="at-pricing-lede body-lg pretty">
-                Corporate sessions are priced per participant, and scale down as
-                your group grows. Everything on the page is included — no add-ons.
-              </p>
-            </Reveal>
+        <div className="section-head">
+          <Reveal><p className="eyebrow eyebrow-row">Sessions and pricing</p></Reveal>
+          <Reveal delay={0.05}>
+            <h2 className="t-h1 balance at-pricing-head">Simple, transparent rates.</h2>
+          </Reveal>
+        </div>
 
-            <RevealGroup as="ul" className="checklist at-pricing-list" stagger={0.08}>
-              {pricing.includes.map((it) => (
-                <RevealItem as="li" key={it}>{it}</RevealItem>
+        <div className="at-pricing-grid">
+          <div className="at-session">
+            <RevealGroup as="dl" className="at-session-list" stagger={0.07}>
+              {session.map((d) => (
+                <RevealItem as="div" className="at-session-row" key={d.label}>
+                  <dt className="mono at-session-label">{d.label}</dt>
+                  <dd className="at-session-value">{d.value}</dd>
+                </RevealItem>
               ))}
             </RevealGroup>
             <Reveal delay={0.1}>
-              <p className="mono at-pricing-provide">{pricing.provides}</p>
+              <p className="at-pricing-note pretty">{pricing.custom}</p>
             </Reveal>
           </div>
 
           <RevealGroup className="at-tiers" stagger={0.1}>
+            <RevealItem className="at-tiers-cap mono">Corporate rate, per participant</RevealItem>
             {pricing.tiers.map((t, i) => (
               <RevealItem className={`at-tier${i === pricing.tiers.length - 1 ? " is-best" : ""}`} key={t.range}>
                 {i === pricing.tiers.length - 1 && <span className="at-tier-flag mono">Best value</span>}
@@ -228,12 +211,12 @@ function Pricing() {
                 <span className="at-tier-price">
                   <span className="at-tier-cur">MYR</span>
                   <span className="at-tier-num">{t.price}</span>
+                  <span className="at-tier-per mono">/ pax</span>
                 </span>
-                <span className="at-tier-unit mono">per participant</span>
               </RevealItem>
             ))}
             <Reveal delay={0.1} className="at-tier-cta">
-              <Button to={ENQUIRY} arrow>Request a quote</Button>
+              <Button to={ENQUIRY} arrow>Book a discovery call</Button>
             </Reveal>
           </RevealGroup>
         </div>
@@ -242,22 +225,32 @@ function Pricing() {
   );
 }
 
-/* ------------------------ proof — credentials · stats · logos · HRD */
+/* -------------------------------- proof — credentials · seal · stats · logos */
 function Proof() {
   return (
     <section className="section at-proof accent-aqua">
       <div className="container">
         <div className="at-proof-top">
+          <Reveal className="at-proof-figure">
+            <div className="frame frame-tall">
+              <img src="/images/artist/Lisa-Teo-Session.jpg" alt="Lisa Teo leading a live corporate Guided Drawing session" loading="lazy" decoding="async" />
+            </div>
+            <p className="mono at-proof-caption">Lisa, guiding a live corporate session</p>
+          </Reveal>
+
           <div className="at-proof-copy">
             <Reveal><p className="eyebrow eyebrow-row">Why Lisa</p></Reveal>
             <Reveal delay={0.05}>
               <h2 className="t-h2 balance at-proof-head">Certified, and quietly experienced.</h2>
             </Reveal>
             <RevealGroup as="ul" className="checklist at-proof-list" stagger={0.09}>
-              {therapy.credentials.slice(0, 3).map((c) => (
+              {therapy.credentials.map((c) => (
                 <RevealItem as="li" key={c}>{c}</RevealItem>
               ))}
             </RevealGroup>
+
+            {/* the ONE place HRD is mentioned: the seal carries it, the copy
+                only explains what it means for a Malaysian company */}
             <Reveal delay={0.1}>
               <aside className="at-hrd-note">
                 <img
@@ -268,25 +261,25 @@ function Proof() {
                   decoding="async"
                 />
                 <span className="at-hrd-note-body">
-                  <span className="at-hrd-badge mono">HRD Corp claimable</span>
+                  <span className="at-hrd-badge mono">Claimable</span>
                   <span className="at-hrd-note-text">
-                    An HRD Corp Registered Training Provider — for Malaysian companies,
-                    corporate programmes fit inside your existing training budget.
+                    A registered training provider, so Malaysian companies can fund
+                    these programmes from an existing training budget.
                   </span>
                 </span>
               </aside>
             </Reveal>
           </div>
-
-          <RevealGroup className="at-proof-stats" stagger={0.1}>
-            {credStats.map((s) => (
-              <RevealItem className="at-stat" key={s.label}>
-                <span className="at-stat-value">{s.value}</span>
-                <span className="at-stat-label">{s.label}</span>
-              </RevealItem>
-            ))}
-          </RevealGroup>
         </div>
+
+        <RevealGroup className="at-proof-stats" stagger={0.1}>
+          {proofStats.map((s) => (
+            <RevealItem className="at-stat" key={s.label}>
+              <span className="at-stat-value">{s.value}</span>
+              <span className="at-stat-label">{s.label}</span>
+            </RevealItem>
+          ))}
+        </RevealGroup>
       </div>
 
       <Reveal className="at-proof-marquee">
@@ -305,14 +298,14 @@ function Voices() {
         <div className="section-head-row">
           <div className="section-head">
             <Reveal><p className="eyebrow eyebrow-row">In their words</p></Reveal>
-            <Reveal delay={0.05}><h2 className="t-h2">Before, during, and after.</h2></Reveal>
           </div>
         </div>
 
         <RevealGroup className="at-voice-grid" stagger={0.1}>
           {therapy.testimonials.map((t) => (
             <RevealItem className="at-voice" key={t.name}>
-              <p className="at-voice-quote">&ldquo;{t.quote}&rdquo;</p>
+              <span className="at-voice-mark" aria-hidden="true">&ldquo;</span>
+              <p className="at-voice-quote">{t.quote}</p>
               <p className="mono at-voice-name">{t.name}</p>
             </RevealItem>
           ))}
@@ -328,7 +321,6 @@ export default function ArtTherapy() {
       <TherapyHero />
       <Lead />
       <Method />
-      <SessionGallery />
       <Audiences />
       <Pricing />
       <Proof />

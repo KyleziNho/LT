@@ -53,85 +53,91 @@ export const stats = [
 // ART THERAPY — her largest revenue stream (corporate wellness)
 export const therapy = {
   eyebrow: "Guided Drawing Art Therapy",
-  headline: "A quieter kind of clarity.",
+  // headline + intro copy taken verbatim from lisateoart.com/art-therapy
+  headline: "Take a moment from your daily stress to reconnect with your inner balance and peace.",
   intro:
-    "Take a moment from your daily stress to reconnect with your inner balance and peace — a body-based art therapy method drawn with both hands, eyes closed, following the breath. No skill required, only willingness.",
+    "My Guided Drawing session is designed for individuals and corporate teams seeking a calm, grounding experience, especially in high-stress environments.",
+  introMore:
+    "Participants learn to identify and release anxiety and tension, and leave the session feeling calm, joyful, positive and ready to resume their daily lives and work with refreshed vigour and productivity.",
   // the important distinction the live site leads with
   distinction:
-    "This is therapeutic in nature — a guided practice for emotional release and grounding, not a recreational art class or a casual team-building activity.",
+    "This session is therapeutic in nature, not a recreational art class or casual team-building activity.",
   // words participants use to describe how they leave a session
   outcomes: ["Calm", "Joyful", "Positive", "Grounded"],
+  // "What is Guided Drawing?" — the four components, verbatim from lisateoart.com
   method: [
     {
-      step: "Sensory-based drawing",
-      text: "Drawing with eyes closed, using both hands in a quiet environment, reduces distraction and opens a direct line to your inner thoughts, emotions and body sensations.",
+      step: "Sensory-based art therapy",
+      text: "Draw with eyes closed using both hands, in a quiet environment, to reduce visual and audio distractions. Track your inner thoughts, emotions and body sensations more effectively.",
+      img: "/images/therapy/guided-1-sensory.jpg",
+      alt: "Participants drawing with their eyes closed at a quiet table",
     },
     {
-      step: "Emotional release & clarity",
-      text: "Alternating cycles of breathing, drawing and reflection use movement to release negative emotions and clear away mental clutter.",
+      step: "Emotional release and clarity",
+      text: "Alternate between breathing, drawing and reflection. Use drawing and body movements to release negative emotions and reduce mental clutter.",
+      img: "/images/therapy/guided-2-release.jpg",
+      alt: "Hands drawing loose colour across large-format paper",
     },
     {
-      step: "Nervous system regulation",
-      text: "Rhythmic, repetitive mark-making stimulates positive sensory feedback that calms and regulates an overstimulated nervous system.",
+      step: "Regulate your nervous system",
+      text: "Draw in rhythmic repetition to regulate your nervous system and stimulate increasingly satisfying and positive sensory feedback.",
+      img: "/images/therapy/guided-3-regulate.jpg",
+      alt: "Hands sweeping over rhythmic, repeated crayon marks",
     },
     {
-      step: "Brain recalibration",
-      text: "The sensorimotor feedback loop encourages new neurological pathways — a chance to rewrite your biography toward a more authentic, alive sense of self.",
+      step: "Recalibrate your brain",
+      text: "This sensorimotor feedback loop encourages the development of new neurological pathways that allow you to rewrite your biography towards a more authentic, alive sense of self.",
+      img: "/images/therapy/guided-4-recalibrate.jpg",
+      alt: "Two participants sharing a moment of lightness mid-session",
     },
   ],
+  // "Who is this for?" — verbatim target audience from the live site
   audiences: [
-    {
-      title: "Corporate wellness",
-      text: "A meaningful reset for teams in high-stress environments — participants identify and release anxiety, and return to work calm and re-centred.",
-      note: "2-hour sessions · on-site",
-    },
-    {
-      title: "Beyond team-building",
-      text: "A genuine alternative to conventional team-building, claimable through HRDC training budgets for Malaysian companies.",
-      note: "HRDC claimable",
-    },
-    {
-      title: "Individuals",
-      text: "Private one-to-one sessions for anyone seeking emotional release and grounding away from the noise of daily life.",
-      note: "One-to-one",
-    },
+    "Corporate teams seeking meaningful wellness programs",
+    "Companies with HRDC training budgets",
+    "Companies looking for alternatives to conventional team-building and leadership workshops",
+    "Individuals seeking emotional release and grounding",
+  ],
+  // "Session Details" — verbatim from the live site
+  session: [
+    { label: "Duration", value: "2 hours per session" },
+    { label: "Group size", value: "Up to 25 participants per session" },
+    { label: "Frequency", value: "Multiple sessions can be conducted within a day" },
+    { label: "Materials", value: "All art materials, including crayons, finger paints and large-format paper, are provided" },
+    { label: "You provide", value: "A venue such as a meeting room, with tables and chairs for participants" },
   ],
   // tiered corporate pricing, verbatim from lisateoart.com
   pricing: {
     tiers: [
-      { range: "20–80 participants", price: "130" },
-      { range: "81–100 participants", price: "120" },
+      { range: "20 to 80 participants", price: "130" },
+      { range: "81 to 100 participants", price: "120" },
       { range: "100 or more", price: "100" },
     ],
-    unit: "MYR / participant",
-    includes: [
-      "Crayons, finger paints & large-format paper — all materials provided",
-      "A two-hour guided session led by Lisa",
-      "Up to 25 participants per session, with multiple sessions in a day",
-      "Half-day, full-day & HRDC-claimable formats on request",
-    ],
-    provides: "You provide the venue, tables and chairs — Lisa brings the rest.",
+    unit: "MYR / pax",
+    custom:
+      "For half or whole day workshops, HRDC-claimable programs, or other customised sessions, please get in touch.",
   },
+  // genuine, non-overlapping credentials — HRD lives once, in its own seal note;
+  // the client roster lives once, in the logo strip. No line repeats either.
   credentials: [
-    "Certified in Guided Drawing — Institute for Sensorimotor Art Therapy, Australia",
-    "HRD Corp certified trainer (2024)",
-    "Sensory-based method: breathing, drawing & reflection to regulate the nervous system",
-    "Programmes for AXA, Coca-Cola, Ogilvy, Marsh, Sunway, Taylor's & SEGi",
+    "Certified in Guided Drawing by the Institute for Sensorimotor Art Therapy, Australia",
+    "A sensory-based method that pairs breathing, drawing and reflection to regulate the nervous system",
+    "Hundreds of sessions held for teams and individuals since turning to this practice full-time",
   ],
   testimonials: [
     {
       quote:
-        "A little stressed and pressured before the session — but it felt therapeutic during, and I left with a childlike joy!",
+        "I felt a little stressed and pressured before the session, but it felt genuinely therapeutic while it happened, and I left with a childlike joy.",
       name: "Natasha S.",
     },
     {
       quote:
-        "Lisa is experienced and patient in guiding us through the art. So well guided by her.",
+        "Lisa is experienced and patient in the way she guides you through the art. We were so well held from the first mark to the last.",
       name: "Elynn K.",
     },
     {
       quote:
-        "Before the session I felt gloomy, during it I was excited, and afterwards I felt genuinely happy.",
+        "Before the session I felt gloomy. During it I felt excited. Afterwards I felt genuinely happy.",
       name: "Lufti M.",
     },
   ],

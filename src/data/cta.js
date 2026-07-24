@@ -43,7 +43,7 @@ const ROUTES = [
     match: ["/art-therapy"],
     eyebrow: "For your team",
     head: [{ t: "Give your team" }, { t: "an hour of" }, { t: "stillness.", accent: true }],
-    sub: "A breath-led reset for teams in high-stress work — HRDC-claimable, led on-site by Lisa. No skill required, only willingness.",
+    sub: "A breath-led reset for teams in high-stress work, HRDC-claimable and led on-site by Lisa. No skill required, only willingness.",
     button: { label: "Plan a session", to: "/contact", cursor: "Plan" },
   },
   {
