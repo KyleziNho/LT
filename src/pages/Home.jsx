@@ -8,7 +8,8 @@ import Magnetic from "../components/Magnetic";
 import { Reveal, RevealGroup, RevealItem, LineReveal, Brush } from "../components/Reveal";
 import { Button, ArrowRight } from "../components/UI";
 import { series, featuredArtworks, allArtworks } from "../data/artworks";
-import { pathways, stats, testimonials, blog } from "../data/site";
+import { pathways, stats, testimonials } from "../data/site";
+import { useJournalPosts } from "../data/journal";
 import { thumb } from "../lib/util";
 import "../styles/home.css";
 import "../styles/journal.css";
@@ -391,7 +392,11 @@ function Voices() {
 
 /* -------- from the journal -------- */
 function FromJournal() {
-  const posts = blog.slice(0, 3);
+  const { posts: all, loading } = useJournalPosts();
+  const posts = (all || []).slice(0, 3);
+  // Keep the section out of the DOM until there is something to show, so the
+  // home page never flashes an empty "From the journal" band.
+  if (loading || posts.length === 0) return null;
   return (
     <section className="section from-journal">
       <div className="container">

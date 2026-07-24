@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Reveal, RevealGroup, RevealItem, LineReveal } from "../components/Reveal";
 import { ArrowRight } from "../components/UI";
 import { useReveal } from "../hooks/useReveal";
-import { blog } from "../data/site";
+import { useJournalPosts } from "../data/journal";
 import "../styles/journal.css";
 
 /* per-tag colour signature — a quiet tint for the cursor ring, the tag,
@@ -56,13 +56,77 @@ function Card({ post }) {
   );
 }
 
+/* Feature card — used for the top featured post and the closing post. */
+function Feature({ post, eager = false, closer = false }) {
+  const t = tintOf(post.tag);
+  const img = closer ? (post.gallery && post.gallery[0]) || post.cover : post.cover;
+  const media = (
+    <Cover className="jfeature-media" src={img} alt={post.title} eager={eager} />
+  );
+  const body = (
+    <div className="jfeature-body">
+      <Meta post={post} />
+      <h2 className="jfeature-title">{post.title}</h2>
+      <p className="jfeature-excerpt pretty">{post.excerpt}</p>
+      <span className="journal-more">Read the piece <ArrowRight /></span>
+    </div>
+  );
+  return (
+    <Link
+      to={`/journal/${post.slug}`}
+      className={`jfeature ${closer ? "jfeature--closer" : ""}`}
+      data-cursor="Read"
+      data-cursor-tint={t.ring}
+      style={{ "--jtint": t.deep, "--jring": t.ring }}
+    >
+      {closer ? <>{body}{media}</> : <>{media}{body}</>}
+    </Link>
+  );
+}
+
+/* Loading placeholder — a calm shimmer while posts arrive from Sanity. */
+function JournalSkeleton() {
+  return (
+    <div className="journal-skeleton" aria-hidden="true">
+      <div className="jsk jsk-feature" />
+      <div className="journal-grid">
+        {[0, 1, 2].map((i) => <div key={i} className="jsk jsk-card" />)}
+      </div>
+    </div>
+  );
+}
+
+function JournalList({ posts }) {
+  const featured = posts[0];
+  const hasMulti = posts.length > 1;
+  const closer = hasMulti ? posts[posts.length - 1] : null;
+  const middle = hasMulti ? posts.slice(1, -1) : [];
+
+  return (
+    <>
+      <Reveal>
+        <Feature post={featured} eager />
+      </Reveal>
+
+      {middle.length > 0 && (
+        <RevealGroup className="journal-grid" stagger={0.08}>
+          {middle.map((p) => (
+            <RevealItem key={p.slug}><Card post={p} /></RevealItem>
+          ))}
+        </RevealGroup>
+      )}
+
+      {closer && (
+        <Reveal>
+          <Feature post={closer} closer />
+        </Reveal>
+      )}
+    </>
+  );
+}
+
 export default function Journal() {
-  const featured = blog[0];
-  const closer = blog[blog.length - 1];
-  const middle = blog.slice(1, -1);
-  const ft = tintOf(featured.tag);
-  const ct = tintOf(closer.tag);
-  const closerImg = (closer.gallery && closer.gallery[0]) || closer.cover;
+  const { posts, loading } = useJournalPosts();
 
   return (
     <div className="journal">
@@ -82,47 +146,13 @@ export default function Journal() {
       </header>
 
       <section className="section-tight container">
-        <Reveal>
-          <Link
-            to={`/journal/${featured.slug}`}
-            className="jfeature"
-            data-cursor="Read"
-            data-cursor-tint={ft.ring}
-            style={{ "--jtint": ft.deep, "--jring": ft.ring }}
-          >
-            <Cover className="jfeature-media" src={featured.cover} alt={featured.title} eager />
-            <div className="jfeature-body">
-              <Meta post={featured} />
-              <h2 className="jfeature-title">{featured.title}</h2>
-              <p className="jfeature-excerpt pretty">{featured.excerpt}</p>
-              <span className="journal-more">Read the piece <ArrowRight /></span>
-            </div>
-          </Link>
-        </Reveal>
-
-        <RevealGroup className="journal-grid" stagger={0.08}>
-          {middle.map((p) => (
-            <RevealItem key={p.slug}><Card post={p} /></RevealItem>
-          ))}
-        </RevealGroup>
-
-        <Reveal>
-          <Link
-            to={`/journal/${closer.slug}`}
-            className="jfeature jfeature--closer"
-            data-cursor="Read"
-            data-cursor-tint={ct.ring}
-            style={{ "--jtint": ct.deep, "--jring": ct.ring }}
-          >
-            <div className="jfeature-body">
-              <Meta post={closer} />
-              <h2 className="jfeature-title">{closer.title}</h2>
-              <p className="jfeature-excerpt pretty">{closer.excerpt}</p>
-              <span className="journal-more">Read the piece <ArrowRight /></span>
-            </div>
-            <Cover className="jfeature-media" src={closerImg} alt={closer.title} />
-          </Link>
-        </Reveal>
+        {loading ? (
+          <JournalSkeleton />
+        ) : posts.length === 0 ? (
+          <p className="lede journal-empty">The first entries are on their way.</p>
+        ) : (
+          <JournalList posts={posts} />
+        )}
       </section>
     </div>
   );

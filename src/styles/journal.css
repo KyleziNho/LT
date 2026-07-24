@@ -157,3 +157,32 @@
 /* ---- home teaser ---- */
 .home-journal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(1.4rem, 3vw, 2.4rem); margin-top: clamp(2.5rem, 6vh, 4rem); }
 @media (max-width: 860px) { .home-journal-grid { grid-template-columns: 1fr; max-width: 34rem; } }
+
+/* ---- Portable Text blocks (headings / quotes inside a post body) ---- */
+.post-h2 {
+  font-family: var(--serif); font-size: var(--step-2); line-height: 1.15; color: var(--ink);
+  max-width: 42rem; margin: clamp(2rem, 4vh, 2.8rem) 0 0.2rem;
+}
+.post-quote {
+  font-family: var(--serif); font-style: italic; font-size: var(--step-2);
+  line-height: 1.4; color: var(--ink); max-width: 42rem;
+  margin: clamp(1.8rem, 4vh, 2.6rem) 0; padding-left: 1.1rem;
+  border-left: 2px solid var(--accent-deep);
+}
+
+/* ---- loading skeletons (while content arrives from Sanity) ---- */
+@keyframes jsk-shimmer { 0% { background-position: -180% 0; } 100% { background-position: 180% 0; } }
+.jsk {
+  border-radius: 14px;
+  background: linear-gradient(100deg, var(--paper-2) 30%, var(--paper-3) 45%, var(--paper-2)60%);
+  background-size: 220% 100%;
+  animation: jsk-shimmer 1.5s ease-in-out infinite;
+}
+.journal-skeleton { display: block; }
+.jsk-feature { width: 100%; aspect-ratio: 16 / 8; margin-bottom: clamp(2.5rem, 6vh, 4rem); }
+.jsk-card { width: 100%; aspect-ratio: 4 / 5; }
+.jsk-line { height: 1.1rem; border-radius: 6px; margin-top: 0.9rem; }
+.jsk-line--lg { height: 2.6rem; width: min(24rem, 80%); }
+.jsk-figure { width: 100%; aspect-ratio: 4 / 5; border-radius: 16px; }
+.journal-empty { color: var(--ink-3); }
+@media (prefers-reduced-motion: reduce) { .jsk { animation: none; } }

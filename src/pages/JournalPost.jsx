@@ -1,11 +1,31 @@
 import { Fragment, useRef } from "react";
 import { useParams, Link, Navigate } from "react-router-dom";
 import { motion, useScroll, useSpring } from "framer-motion";
+import { PortableText } from "@portabletext/react";
 import { Reveal } from "../components/Reveal";
 import { ArrowRight } from "../components/UI";
 import { useReveal } from "../hooks/useReveal";
-import { blog } from "../data/site";
+import { useJournalPost } from "../data/journal";
 import "../styles/journal.css";
+
+/* Portable Text -> the same markup the post body has always used, so the
+   drop-cap, reading measure and inline-gallery weave keep working. A "normal"
+   block becomes a <p class="post-para">; headings and quotes are supported too,
+   plus bold / italic / links from the editor. */
+const PT_COMPONENTS = {
+  block: {
+    normal: ({ children }) => <p className="post-para pretty">{children}</p>,
+    h2: ({ children }) => <h2 className="post-h2">{children}</h2>,
+    blockquote: ({ children }) => <blockquote className="post-quote">{children}</blockquote>,
+  },
+  marks: {
+    link: ({ value, children }) => (
+      <a href={value?.href} target="_blank" rel="noopener noreferrer" className="link">
+        {children}
+      </a>
+    ),
+  },
+};
 
 /* per-tag tint — matches the Journal index so a post keeps its colour
    signature through the eyebrow, drop-cap, progress bar and "next" link. */
@@ -41,11 +61,25 @@ export default function JournalPost() {
   });
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 28, mass: 0.4 });
 
-  const idx = blog.findIndex((p) => p.slug === slug);
-  if (idx === -1) return <Navigate to="/journal" replace />;
+  const { post, next, loading, notFound } = useJournalPost(slug);
 
-  const post = blog[idx];
-  const next = blog[(idx + 1) % blog.length];
+  if (notFound) return <Navigate to="/journal" replace />;
+
+  if (loading || !post) {
+    return (
+      <article className="post post--loading">
+        <div className="post-head container">
+          <div className="post-head-text">
+            <Link to="/journal" className="post-back mono" data-cursor="true">← Journal</Link>
+            <div className="jsk jsk-line" style={{ width: "9rem" }} />
+            <div className="jsk jsk-line jsk-line--lg" />
+          </div>
+          <div className="post-head-media"><div className="jsk jsk-figure" /></div>
+        </div>
+      </article>
+    );
+  }
+
   const gallery = post.gallery || [];
   const tint = TINT[post.tag] || TINT.Feature;
   // weave the extra images into the article at even points, not the bottom
@@ -73,10 +107,10 @@ export default function JournalPost() {
       </header>
 
       <div className="post-body container" ref={bodyRef}>
-        {post.body.map((para, i) => (
-          <Fragment key={i}>
+        {post.body.map((block, i) => (
+          <Fragment key={block._key || i}>
             <Reveal delay={0.03}>
-              <p className="post-para pretty">{para}</p>
+              <PortableText value={[block]} components={PT_COMPONENTS} />
             </Reveal>
             {gallery.map((src, k) =>
               insertAfter[k] === i ? (
@@ -89,13 +123,17 @@ export default function JournalPost() {
         ))}
 
         <div className="post-foot">
-          <a href={post.source} target="_blank" rel="noopener noreferrer" className="link" data-cursor="true">
-            View the original <ArrowRight />
-          </a>
-          <Link to={`/journal/${next.slug}`} className="post-next" data-cursor="true">
-            <span className="mono">Next in the journal</span>
-            <span className="post-next-title">{next.title}</span>
-          </Link>
+          {post.source && (
+            <a href={post.source} target="_blank" rel="noopener noreferrer" className="link" data-cursor="true">
+              View the original <ArrowRight />
+            </a>
+          )}
+          {next && (
+            <Link to={`/journal/${next.slug}`} className="post-next" data-cursor="true">
+              <span className="mono">Next in the journal</span>
+              <span className="post-next-title">{next.title}</span>
+            </Link>
+          )}
         </div>
       </div>
     </article>
