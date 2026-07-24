@@ -56,9 +56,9 @@ export const therapy = {
   // headline + intro copy taken verbatim from lisateoart.com/art-therapy
   headline: "Take a moment from your daily stress to reconnect with your inner balance and peace.",
   intro:
-    "My Guided Drawing session is designed for individuals and corporate teams seeking a calm, grounding experience, especially in high-stress environments.",
+    "A guided practice for individuals and corporate teams, especially in high-stress environments.",
   introMore:
-    "Participants learn to identify and release anxiety and tension, and leave the session feeling calm, joyful, positive and ready to resume their daily lives and work with refreshed vigour and productivity.",
+    "Participants identify and release the anxiety and tension they carry, and leave ready to resume their work with refreshed vigour.",
   // the important distinction the live site leads with
   distinction:
     "This session is therapeutic in nature, not a recreational art class or casual team-building activity.",

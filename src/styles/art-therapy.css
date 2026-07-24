@@ -60,8 +60,13 @@
 }
 @media (prefers-reduced-motion: reduce) { .at-hero-cue-line { animation: none; } }
 @media (max-width: 640px) {
-  .at-hero { min-height: 92svh; }
-  .at-hero-cta { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .at-hero { min-height: 90svh; padding-bottom: clamp(2.6rem, 7vh, 4rem); }
+  /* the headline is a full sentence, so tighten it hard on phones so the first
+     screen is the invitation, not a wall of display type */
+  .at-hero-head { font-size: clamp(1.9rem, 8vw, 2.45rem); line-height: 1.06; max-width: 18ch; }
+  .at-hero-eyebrow { margin-bottom: 1rem; }
+  .at-hero-sub { margin-top: 1.1rem; font-size: 1rem; max-width: 40ch; }
+  .at-hero-cta { flex-direction: column; align-items: flex-start; gap: 1rem; margin-top: 1.8rem; }
 }
 
 /* ---- lead / the practice ---- */
@@ -94,6 +99,11 @@
   transform: translateY(-3px);
   background: color-mix(in oklab, var(--aqua) 14%, var(--paper));
   border-color: color-mix(in oklab, var(--aqua) 55%, var(--line));
+}
+@media (max-width: 640px) {
+  .at-lead-head { font-size: clamp(1.55rem, 6.4vw, 2rem); line-height: 1.18; max-width: 26ch; }
+  .at-lead-note { margin-top: 1rem; }
+  .at-outcomes { margin-top: 1.6rem; }
 }
 
 /* ---- method / "what is guided drawing?" ---- */
