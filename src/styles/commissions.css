@@ -37,3 +37,7 @@
 }
 .comm-cta-head { margin: 1.6rem 0 1.8rem; }
 .comm-cta-lede { max-width: 40ch; margin-bottom: clamp(2rem, 4vh, 2.8rem); }
+
+/* her process heading is a full question, so give the head column room to set
+   it in two lines instead of breaking inside "made-to-order" */
+#process .section-head { max-width: 40ch; }

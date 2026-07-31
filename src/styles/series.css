@@ -37,3 +37,7 @@
   .series-next-link { grid-template-columns: 1fr; }
   .series-next-media { display: none; }
 }
+
+/* her series narrative, in full (lisateoart.com/corals, /paddyfields, /mountains) */
+.series-intro-copy { display: grid; gap: 1.1rem; max-width: 46rem; }
+.series-intro-para { color: var(--ink-2); line-height: 1.75; }

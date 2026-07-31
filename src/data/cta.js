@@ -1,66 +1,87 @@
 // Per-route contextual closing CTA for the global Footer.
 //
-// Each page should end on a line that speaks to *where you are* — the same dark
-// dusk band, but the copy changes so the close reads as considered, not as a
-// template footer. Headlines keep the house signature: a Fraunces display line
-// with one italic accent word (mark a line `accent: true`).
+// Every line here is Lisa's own closing line from the equivalent page on
+// lisateoart.com:
+//   home        -> "Have a query about my paintings or art therapy?" / "Contact Me"
+//   paintings   -> "Have more questions?" / "Contact Me"
+//   commissions -> "Have a question or looking to commission a unique painting?
+//                   I'd love to hear from you." / "Get In Touch"
+//   art therapy -> "Interested in exploring whether this is suitable for your
+//                   organisation?" / "Book a Discovery Call"
 //
 // `head` is an array of lines; each line is `{ t: "text" }`, optionally with
 // `accent: true` for the italic Fraunces accent line. `button.cursor` is the
 // label the custom magnetic cursor shows on hover.
 
-// The home / default close — the original "wall, story, team" line, kept as the
-// site's baseline invitation.
 export const HOME_CTA = {
   id: "home",
-  eyebrow: "Let's begin",
-  head: [{ t: "Have a wall," }, { t: "a story, or a" }, { t: "team in mind?" }],
+  eyebrow: "Get in Touch",
+  head: [{ t: "Have a query about my" }, { t: "paintings or art therapy?", accent: true }],
   sub: null,
-  button: { label: "Start a conversation", to: "/contact", cursor: "Begin" },
+  button: { label: "Contact Me", to: "/contact", cursor: "Contact" },
 };
 
-// Ordered by match specificity — first matching prefix wins. `/series/*` sits
-// before `/works` conceptually but both resolve to the same "live with it" close.
+// Ordered by match specificity — first matching prefix wins.
 const ROUTES = [
   {
     id: "works",
     match: ["/works", "/series"],
-    eyebrow: "Take one home",
-    head: [{ t: "See something" }, { t: "you'd want to" }, { t: "live with?", accent: true }],
-    sub: "Each painting ships worldwide, fully insured — and settles into a room as though it had always been there.",
-    button: { label: "Enquire about a work", to: "/contact", cursor: "Enquire" },
+    eyebrow: "Paintings",
+    head: [{ t: "Have more" }, { t: "questions?", accent: true }],
+    sub: null,
+    button: { label: "Contact Me", to: "/contact", cursor: "Contact" },
   },
   {
     id: "commissions",
     match: ["/commissions"],
-    eyebrow: "Made for you",
-    head: [{ t: "Let's paint" }, { t: "your story.", accent: true }],
-    sub: "A piece made for your space and the life inside it — from first conversation to the wall in two to four weeks.",
-    button: { label: "Begin a commission", to: "/contact", cursor: "Begin" },
+    eyebrow: "Made to order",
+    head: [
+      { t: "Have a question or looking" },
+      { t: "to commission a" },
+      { t: "unique painting?", accent: true },
+    ],
+    sub: "I’d love to hear from you.",
+    button: { label: "Get In Touch", to: "/contact?subject=Commission%20enquiry", cursor: "Enquire" },
   },
   {
     id: "art-therapy",
     match: ["/art-therapy"],
-    eyebrow: "For your team",
-    head: [{ t: "Give your team" }, { t: "an hour of" }, { t: "stillness.", accent: true }],
-    sub: "A breath-led reset for teams in high-stress work, HRDC-claimable and led on-site by Lisa. No skill required, only willingness.",
-    button: { label: "Plan a session", to: "/contact", cursor: "Plan" },
+    eyebrow: "Art Therapy",
+    head: [
+      { t: "Interested in exploring" },
+      { t: "whether this is suitable" },
+      { t: "for your organisation?", accent: true },
+    ],
+    sub: null,
+    button: {
+      label: "Book a Discovery Call",
+      to: "/contact?subject=Art%20therapy%20enquiry",
+      cursor: "Book",
+    },
+  },
+  {
+    id: "projects",
+    match: ["/projects"],
+    eyebrow: "Featured Projects",
+    head: [{ t: "Have a query about my" }, { t: "paintings or art therapy?", accent: true }],
+    sub: null,
+    button: { label: "Contact Me", to: "/contact", cursor: "Contact" },
   },
   {
     id: "about",
     match: ["/about"],
-    eyebrow: "Keep looking",
-    head: [{ t: "Now, come see" }, { t: "the work.", accent: true }],
-    sub: "The rest of the story lives in the paintings — inner landscapes charted across three continents.",
-    button: { label: "View the collection", to: "/works", cursor: "Explore" },
+    eyebrow: "Paintings",
+    head: [{ t: "My art is to be felt," }, { t: "not just seen.", accent: true }],
+    sub: null,
+    button: { label: "View My Paintings", to: "/works", cursor: "View" },
   },
   {
     id: "journal",
     match: ["/journal"],
-    eyebrow: "Keep reading",
-    head: [{ t: "Words are one" }, { t: "thing — paint" }, { t: "is another.", accent: true }],
-    sub: "Come see the paintings breathe in person, or carry on through the studio notes.",
-    button: { label: "See the paintings", to: "/works", cursor: "Explore" },
+    eyebrow: "Journal",
+    head: [{ t: "Have a query about my" }, { t: "paintings or art therapy?", accent: true }],
+    sub: null,
+    button: { label: "Contact Me", to: "/contact", cursor: "Contact" },
   },
 ];
 

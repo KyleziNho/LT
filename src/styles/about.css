@@ -44,15 +44,9 @@
 }
 
 /* ---- artist statement ---- */
-.about-statement { text-align: center; }
-.about-statement-eyebrow { justify-content: center; }
-.about-statement-quote {
-  font-family: var(--serif); font-weight: 400; font-style: italic;
-  font-size: clamp(2rem, 1rem + 4vw, 4.4rem); line-height: 1.08; letter-spacing: -0.02em;
-  color: var(--ink); max-width: 18ch; margin: 1.4rem auto 1.6rem;
-}
-.about-statement-quote .brush { font-style: italic; }
-.about-statement-body { max-width: 54ch; margin-inline: auto; font-size: var(--step-1); }
+/* artist statement — three long paragraphs, so it reads as a left-aligned
+   column (the old centred treatment was written for a one-line pull quote) */
+.about-statement { border-top: 1px solid var(--line); }
 
 /* ---- journey pull-quote ---- */
 .about-journey-quote { margin-top: 2.4rem; padding-left: 1.4rem; border-left: 2px solid var(--accent); }
@@ -165,4 +159,28 @@
 .about-cta-actions > div + div { border-top: 1px solid var(--line); }
 @media (max-width: 860px) {
   .about-cta-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+}
+
+/* ---- her About page prose (verbatim, lisateoart.com/about) ---- */
+.about-work-inner { max-width: 46rem; margin-inline: auto; }
+.about-work-para { color: var(--ink-2); line-height: 1.75; margin-bottom: 1.15rem; }
+.about-work-quote { margin-block: 2.2rem; }
+.about-signoff {
+  font-family: var(--serif); font-style: italic; font-size: var(--step-1);
+  color: var(--ink); margin-top: 1.6rem;
+}
+.about-therapy .eyebrow-row { margin-bottom: 1.4rem; }
+
+/* ---- artist statement ---- */
+.about-statement-inner { max-width: 46rem; margin-inline: auto; text-align: left; }
+.about-statement-head { margin: 0.6rem 0 1.9rem; }
+.about-statement-para { color: var(--ink-2); line-height: 1.78; margin-bottom: 1.25rem; }
+
+/* ---- exhibitions intro + solo/group tag ---- */
+.about-exhibit-intro { color: var(--on-noir-2); max-width: 34rem; line-height: 1.65; }
+.timeline-kind {
+  display: inline-block; margin-left: 0.9rem; vertical-align: middle;
+  font-size: 0.58rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--lilac); border: 1px solid var(--noir-line); border-radius: 100px;
+  padding: 0.34em 0.7em;
 }

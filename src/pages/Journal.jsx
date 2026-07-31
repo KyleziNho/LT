@@ -132,17 +132,11 @@ export default function Journal() {
     <div className="journal">
       <header className="page-hero container">
         <Reveal className="page-hero-eyebrow">
-          <p className="eyebrow eyebrow-row">Journal · Writing &amp; press</p>
+          <p className="eyebrow eyebrow-row">Blog</p>
         </Reveal>
         <h1 className="t-h1">
-          <LineReveal lines={["Notes from", "the studio."]} inView={false} />
+          <LineReveal lines={["Art, Healing &", "Creative Insights"]} inView={false} />
         </h1>
-        <Reveal delay={0.15} className="page-hero-lede">
-          <p className="lede">
-            Essays, films, and features — on the paddy fields and the coral, on Guided
-            Drawing, and on the life of leaving law for the canvas.
-          </p>
-        </Reveal>
       </header>
 
       <section className="section-tight container">

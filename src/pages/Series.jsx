@@ -48,10 +48,14 @@ export default function Series() {
       <section className="section series-intro">
         <div className="container">
           <div className="series-intro-grid">
-            <Reveal><p className="eyebrow eyebrow-row">The narrative</p></Reveal>
-            <Reveal delay={0.1}>
-              <p className="t-h3 series-intro-text balance">{meta.description}</p>
-            </Reveal>
+            <Reveal><p className="eyebrow eyebrow-row">{meta.title}</p></Reveal>
+            <div className="series-intro-copy">
+              {(meta.narrative || []).map((para, i) => (
+                <Reveal delay={0.1 + i * 0.05} key={para.slice(0, 30)}>
+                  <p className={i === 0 ? "t-h3 series-intro-text balance" : "series-intro-para pretty"}>{para}</p>
+                </Reveal>
+              ))}
+            </div>
           </div>
         </div>
       </section>

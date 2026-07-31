@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence, motion, useScroll, useSpring } from "framer-motion";
 import SmoothScroll from "./components/SmoothScroll";
@@ -15,10 +16,33 @@ import About from "./pages/About";
 import Journal from "./pages/Journal";
 import JournalPost from "./pages/JournalPost";
 import Contact from "./pages/Contact";
+import Projects from "./pages/Projects";
 
 import "./styles/components.css";
 
 const EASE = [0.16, 1, 0.3, 1];
+
+// Page titles, verbatim from the equivalent pages on lisateoart.com.
+const TITLES = [
+  ["/works", "Original Contemporary Paintings for Sale | Lisa Teo"],
+  ["/series", "Original Contemporary Paintings for Sale | Lisa Teo"],
+  ["/commissions", "Commissioned Art & Custom Paintings by Lisa Teo"],
+  ["/art-therapy", "Corporate Art Therapy with Guided Drawing | Art Wellness Programme"],
+  ["/about", "About Lisa Teo | Artist & Certified Guided Drawing Art Therapist"],
+  ["/projects", "Featured Art Commissions, Exhibitions & Corporate Wellness Projects | Lisa Teo Art"],
+  ["/journal", "Art, Healing & Creative Insights | Lisa Teo's Blog"],
+  ["/contact", "Contact Lisa Teo"],
+];
+const HOME_TITLE = "Lisa Teo | Fine Art and Art Therapy";
+
+function DocumentTitle() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    const hit = TITLES.find(([p]) => pathname === p || pathname.startsWith(p + "/"));
+    document.title = hit ? hit[1] : HOME_TITLE;
+  }, [pathname]);
+  return null;
+}
 
 function PageWrap({ children }) {
   return (
@@ -53,6 +77,7 @@ function AnimatedRoutes() {
           <Route path="/about" element={<About />} />
           <Route path="/journal" element={<Journal />} />
           <Route path="/journal/:slug" element={<JournalPost />} />
+          <Route path="/projects" element={<Projects />} />
           <Route path="/contact" element={<Contact />} />
         </Routes>
       </PageWrap>
@@ -64,6 +89,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <SmoothScroll>
+        <DocumentTitle />
         <Cursor />
         <ScrollProgress />
         <RouteCurtain />

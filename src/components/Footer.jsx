@@ -10,6 +10,7 @@ const NAV = [
   { to: "/works", label: "Works" },
   { to: "/commissions", label: "Commissions" },
   { to: "/art-therapy", label: "Art Therapy" },
+  { to: "/projects", label: "Featured Projects" },
   { to: "/about", label: "About" },
   { to: "/contact", label: "Contact" },
 ];
@@ -115,7 +116,7 @@ export default function Footer() {
 
       <div className="footer-legal container">
         <span className="mono tiny faint">© {new Date().getFullYear()} Lisa Teo Art</span>
-        <span className="mono tiny faint">Fine Art · Commissions · Art Therapy</span>
+        <span className="mono tiny faint">Fine Art and Art Therapy</span>
       </div>
     </footer>
   );

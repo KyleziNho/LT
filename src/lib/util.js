@@ -22,7 +22,7 @@ export function thumb(src) {
 // Human price / status helpers
 export function priceLabel(art) {
   if (art.price) return art.price;
-  if (art.status === "sold") return "Sold";
+  if (art.status === "sold") return "Sold Out";
   if (art.status === "commission") return "Commissioned";
-  return "Enquire for price";
+  return "Enquire";
 }

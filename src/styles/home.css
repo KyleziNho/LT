@@ -92,11 +92,12 @@
 }
 .statement-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 1.5rem; }
 .statement-text {
-  font-family: var(--serif); font-weight: 400; line-height: 0.98; letter-spacing: -0.025em;
-  font-size: clamp(2.6rem, 6.4vw, 5rem); color: var(--ink); margin-top: 0.4rem;
+  font-family: var(--serif); font-weight: 400; line-height: 1.06; letter-spacing: -0.022em;
+  font-size: clamp(1.9rem, 1.2rem + 2.2vw, 3.1rem); color: var(--ink); margin-top: 0.4rem;
+  max-width: 20ch;
 }
 .statement-text .hero-head-accent { color: var(--violet-deep); font-style: italic; }
-.statement-note { color: var(--ink-2); font-size: var(--step-1); max-width: 34ch; font-weight: 350; }
+.statement-note { color: var(--ink-2); font-size: var(--step-0); max-width: 44ch; font-weight: 350; line-height: 1.62; text-wrap: pretty; }
 .statement-link { color: var(--ink); margin-top: 0.4rem; }
 .statement-media { position: relative; }
 .statement-frame {
@@ -240,3 +241,22 @@
 .voices-dot { width: 32px; height: 3px; border-radius: 2px; background: var(--line); transition: background 0.4s, transform 0.4s; }
 .voices-dot.is-active { background: var(--accent); transform: scaleY(1.6); }
 .voices-quote { max-width: none; }
+
+/* ---- featured projects (home teaser) ---- */
+.fp-list { display: grid; gap: 0; list-style: none; border-top: 1px solid var(--line); }
+.fp-row {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center; gap: clamp(1rem, 3vw, 2.5rem);
+  padding: clamp(1.15rem, 2.6vh, 1.7rem) 0;
+  border-bottom: 1px solid var(--line);
+  transition: padding-left 0.5s var(--ease), color 0.4s;
+}
+.fp-row:hover { padding-left: 0.9rem; }
+.fp-row-title { font-family: var(--serif); font-size: clamp(1.12rem, 2.1vw, 1.5rem); line-height: 1.28; }
+.fp-row-date { color: var(--ink-3); font-size: 0.72rem; white-space: nowrap; }
+.fp-row-arrow { opacity: 0; transform: translateX(-6px); transition: opacity 0.4s, transform 0.4s var(--ease); color: var(--accent); }
+.fp-row:hover .fp-row-arrow { opacity: 1; transform: translateX(0); }
+@media (max-width: 640px) {
+  .fp-row { grid-template-columns: minmax(0, 1fr) auto; gap: 0.9rem; }
+  .fp-row-arrow { display: none; }
+}

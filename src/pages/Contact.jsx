@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Reveal, LineReveal } from "../components/Reveal";
 import { Button } from "../components/UI";
 import { artistInfo } from "../data/artworks";
+import { contact } from "../data/site";
 import "../styles/contact.css";
 
 const EASE = [0.16, 1, 0.3, 1];
@@ -89,9 +90,9 @@ function EnquiryForm() {
               />
             </svg>
           </div>
-          <h3 className="t-h3 balance">Thank you — your message is on its way.</h3>
+          <h3 className="t-h3 balance">Thank you, your message is on its way.</h3>
           <p className="form-note pretty">
-            Lisa reads every note herself and replies within a couple of days.
+            Your mail app has opened with everything filled in, addressed to {artistInfo.email}.
           </p>
         </motion.div>
       ) : (
@@ -157,7 +158,7 @@ function EnquiryForm() {
             <input
               id="contact-subject"
               type="text"
-              placeholder="A few words on what brings you here"
+              placeholder="Subject"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
               data-cursor="true"
@@ -169,7 +170,7 @@ function EnquiryForm() {
             <textarea
               id="contact-message"
               rows={5}
-              placeholder="Tell Lisa a little about the work, the wall, or the team you have in mind…"
+              placeholder="Your message"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               data-cursor="true"
@@ -194,7 +195,7 @@ function EnquiryForm() {
           <div className="contact-submit">
             <Button type="submit">Send message</Button>
             <p className="form-note">
-              Your mail app opens with everything pre-filled — nothing is stored here.
+              Your mail app opens with everything filled in. Nothing is stored here.
             </p>
           </div>
         </motion.form>
@@ -217,14 +218,11 @@ function Details() {
   return (
     <div className="contact-details">
       <h1 className="t-h1 contact-head">
-        <LineReveal lines={["Let's begin", "a conversation."]} delay={0.1} inView={false} />
+        <LineReveal lines={["Get in Touch"]} delay={0.1} inView={false} />
       </h1>
 
       <Reveal delay={0.28}>
-        <p className="lede pretty">
-          A work you keep thinking about, a wall waiting for its painting, or a
-          team that needs an hour of quiet — every enquiry starts the same way.
-        </p>
+        <p className="lede pretty">{contact.note}</p>
       </Reveal>
 
       <Reveal delay={0.36}>
@@ -269,12 +267,6 @@ function Details() {
         </ul>
       </Reveal>
 
-      <Reveal delay={0.5}>
-        <p className="form-note contact-reassure pretty">
-          Lisa replies within a couple of days. Works travel well — carefully
-          crated international shipping is available on every painting.
-        </p>
-      </Reveal>
     </div>
   );
 }
@@ -286,7 +278,7 @@ export default function Contact() {
         <div className="container">
           <Reveal y={14} duration={0.8}>
             <p className="eyebrow eyebrow-row page-hero-eyebrow">
-              Contact · KL &amp; worldwide
+              Contact Lisa Teo
             </p>
           </Reveal>
 
@@ -299,15 +291,6 @@ export default function Contact() {
         </div>
       </section>
 
-      <section className="section-tight contact-close">
-        <div className="container">
-          <Reveal y={12}>
-            <p className="divider-label mono contact-close-note">
-              Studio visits by appointment · Sekinchan to the sea
-            </p>
-          </Reveal>
-        </div>
-      </section>
     </>
   );
 }

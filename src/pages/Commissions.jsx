@@ -5,14 +5,14 @@ import Gallery from "../components/Gallery";
 import PageHeroBg from "../components/PageHeroBg";
 import { Reveal, RevealGroup, RevealItem, LineReveal } from "../components/Reveal";
 import { Button, ArrowRight } from "../components/UI";
-import { commissionProcess, commissionFaqs, testimonials } from "../data/site";
+import { commissionProcess, commissionFaqs, commissionIntro, commissionCta, testimonials } from "../data/site";
 import { allArtworks } from "../data/artworks";
 import "../styles/commissions.css";
 
 const EASE = [0.16, 1, 0.3, 1];
 
 const commissionItems = allArtworks.filter((a) => a.seriesId === "commissions");
-const commissionVoice = testimonials[2];
+const commissionVoice = testimonials[7]; // Cheng Luan and Alan — the lotus commission
 
 /* -------- hero -------- */
 function Hero() {
@@ -30,7 +30,7 @@ function Hero() {
         </motion.p>
 
         <h1 className="t-h1 balance">
-          <LineReveal lines={["A painting made", "for your story."]} delay={0.3} inView={false} />
+          <LineReveal lines={["Commissioned Art &", "Custom Paintings"]} delay={0.3} inView={false} />
         </h1>
 
         <motion.p
@@ -39,9 +39,7 @@ function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, ease: EASE, delay: 0.6 }}
         >
-          Original works created for your space and the meaning you want it to
-          hold — portraits, landscapes, and feng-shui compositions, painted in
-          the Kuala Lumpur studio and completed in two to four weeks.
+          {commissionIntro}
         </motion.p>
 
         <motion.div
@@ -50,7 +48,7 @@ function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, ease: EASE, delay: 0.75 }}
         >
-          <Button to="/contact?subject=Commission%20enquiry" variant="outline">Start a commission</Button>
+          <Button to="/contact?subject=Commission%20enquiry" variant="outline">{commissionCta.enquiry}</Button>
           <a href="#process" className="link" data-cursor="true">
             How it works <ArrowRight />
           </a>
@@ -62,10 +60,10 @@ function Hero() {
           animate={{ opacity: 1 }}
           transition={{ duration: 1, ease: EASE, delay: 0.95 }}
         >
-          <li className="mono">Portraits</li>
-          <li className="mono">Landscapes</li>
-          <li className="mono">Feng-shui compositions</li>
-          <li className="mono">2–4 weeks · ships worldwide</li>
+          <li className="mono">MYR700-1000 per square foot</li>
+          <li className="mono">50% deposit to confirm</li>
+          <li className="mono">2-4 weeks to complete</li>
+          <li className="mono">2-3 photo updates</li>
         </motion.ul>
       </div>
     </section>
@@ -81,11 +79,11 @@ function Process() {
           <div className="section-head">
             <Reveal><p className="eyebrow eyebrow-row">The process</p></Reveal>
             <Reveal delay={0.05}>
-              <h2 className="t-h1 balance">From first note to your wall.</h2>
+              <h2 className="t-h1 head-compact">Do you create made-to-order paintings?</h2>
             </Reveal>
           </div>
           <Reveal delay={0.1}>
-            <p className="mono faint">Four steps · Deposit reserves your place</p>
+            <p className="mono faint">Yes I do.</p>
           </Reveal>
         </div>
 
@@ -110,9 +108,9 @@ function Recent() {
       <div className="container">
         <div className="section-head-row">
           <div className="section-head wide">
-            <Reveal><p className="eyebrow eyebrow-row">Recent commissions</p></Reveal>
+            <Reveal><p className="eyebrow eyebrow-row">Commissions</p></Reveal>
             <Reveal delay={0.05}>
-              <h2 className="t-h1 balance">Recently made to order.</h2>
+              <h2 className="t-h1 balance">Made to order</h2>
             </Reveal>
           </div>
           <Reveal delay={0.1}>
@@ -121,7 +119,7 @@ function Recent() {
               className="link comm-recent-link"
               data-cursor="true"
             >
-              Start yours <ArrowRight />
+              {commissionCta.enquiry} <ArrowRight />
             </Link>
           </Reveal>
         </div>
@@ -194,20 +192,19 @@ function Faq() {
       <div className="container">
         <div className="comm-faq-grid">
           <div className="section-head">
-            <Reveal><p className="eyebrow eyebrow-row">What to expect</p></Reveal>
+            <Reveal><p className="eyebrow eyebrow-row">FAQ</p></Reveal>
             <Reveal delay={0.05}>
-              <h2 className="t-h2 balance">Questions, answered.</h2>
+              <h2 className="t-h2 head-compact">Frequently Asked Questions</h2>
             </Reveal>
             <Reveal delay={0.1}>
               <p className="muted comm-faq-note pretty">
-                Something more particular in mind? Every commission begins with a
-                conversation —{" "}
+                {commissionCta.question}{" "}
                 <Link
                   to="/contact?subject=Commission%20enquiry"
                   className="link"
                   data-cursor="true"
                 >
-                  write to Lisa
+                  {commissionCta.button}
                 </Link>
                 .
               </p>
@@ -240,17 +237,15 @@ function Closing() {
             <p className="eyebrow eyebrow-accent comm-cta-eyebrow">Made to order</p>
           </Reveal>
           <h2 className="t-h1 comm-cta-head balance">
-            <LineReveal lines={["The next painting", "could be yours."]} />
+            <LineReveal lines={["Have a question or looking to"]} />
+            <LineReveal lines={["commission a unique painting?"]} delay={0.08} />
           </h2>
           <Reveal delay={0.15}>
-            <p className="lede comm-cta-lede pretty">
-              Share the space, the subject, and the feeling you're after — and
-              receive a painting that belongs nowhere else.
-            </p>
+            <p className="lede comm-cta-lede pretty">{commissionCta.line}</p>
           </Reveal>
           <Reveal delay={0.22}>
             <Button to="/contact?subject=Commission%20enquiry" variant="outline">
-              Begin your commission
+              {commissionCta.button}
             </Button>
           </Reveal>
         </div>

@@ -88,5 +88,7 @@
 /* --------------------------------------------------------------------------- */
 @media (max-width: 640px) {
   .cta-sub { font-size: var(--step--1); margin-bottom: 1.7rem; }
-  .cta-head { margin: 0.9rem 0 1.3rem; }
+  /* Lisa's closing lines are full questions, so the display size has to come
+     down on a phone or an authored line wraps mid-phrase. */
+  .cta-head { margin: 0.9rem 0 1.3rem; font-size: clamp(1.5rem, 7.2vw, 2.15rem); line-height: 1.14; }
 }

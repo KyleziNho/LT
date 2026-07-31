@@ -1,0 +1,37 @@
+/* Featured Projects — long-form, editorial. Text is the whole point here, so
+   the page is a quiet numbered column with generous measure. */
+
+.projects-hero { padding-block: clamp(7rem, 16vh, 11rem) clamp(2rem, 5vh, 3.5rem); }
+
+.fp-articles { display: grid; gap: clamp(3rem, 7vh, 5.5rem); list-style: none; }
+
+.fp-article {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr);
+  gap: clamp(1rem, 3vw, 2.5rem);
+  padding-top: clamp(1.75rem, 4vh, 2.75rem);
+  border-top: 1px solid var(--line);
+  scroll-margin-top: 7rem;
+}
+
+.fp-article-index { color: var(--ink-3); font-size: 0.78rem; padding-top: 0.55rem; }
+.fp-article-body { max-width: 46rem; }
+.fp-article-date { color: var(--ink-3); font-size: 0.72rem; letter-spacing: 0.08em; }
+.fp-article-title { margin: 0.5rem 0 1.35rem; }
+.fp-article-para { color: var(--ink-2); line-height: 1.72; margin-bottom: 1.1rem; }
+
+.fp-article-list {
+  display: grid; gap: 0.7rem;
+  margin: 0 0 1.35rem; padding-left: 1.15rem;
+  color: var(--ink-2); line-height: 1.6;
+}
+.fp-article-list li { list-style: none; position: relative; }
+.fp-article-list li::before {
+  content: ""; position: absolute; left: -1.15rem; top: 0.72em;
+  width: 5px; height: 5px; border-radius: 50%; background: var(--accent, var(--ink-3));
+}
+
+@media (max-width: 720px) {
+  .fp-article { grid-template-columns: 1fr; gap: 0.75rem; }
+  .fp-article-index { padding-top: 0; }
+}

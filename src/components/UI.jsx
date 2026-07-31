@@ -51,7 +51,7 @@ export function Button({
 export function StatusPill({ status }) {
   const map = {
     available: ["pill-available", "Available"],
-    sold: ["pill-sold", "Sold"],
+    sold: ["pill-sold", "Sold Out"],
     commission: ["pill-commission", "Commissioned"],
   };
   const [cls, label] = map[status] ?? ["", status];

@@ -8,7 +8,7 @@ import Magnetic from "../components/Magnetic";
 import { Reveal, RevealGroup, RevealItem, LineReveal, Brush } from "../components/Reveal";
 import { Button, ArrowRight } from "../components/UI";
 import { series, featuredArtworks, allArtworks } from "../data/artworks";
-import { pathways, stats, testimonials } from "../data/site";
+import { pathways, stats, testimonials, home, featuredProjects } from "../data/site";
 import { useJournalPosts } from "../data/journal";
 import { thumb } from "../lib/util";
 import "../styles/home.css";
@@ -70,13 +70,13 @@ function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: EASE, delay: 0.2 }}
         >
-          Fine Art &amp; Guided Drawing · Kuala Lumpur
+          Fine Art and Art Therapy · Kuala Lumpur
         </motion.p>
 
         <h1 className="t-hero hero-head">
-          <LineReveal lines={["Painting the", "quiet between"]} delay={0.3} duration={0.75} stagger={0.08} inView={false} />
+          <LineReveal lines={["Transforming Inner", "Landscapes"]} delay={0.3} duration={0.75} stagger={0.08} inView={false} />
           <span className="hero-head-accent">
-            <LineReveal lines={["breaths."]} delay={0.52} duration={0.75} inView={false} />
+            <LineReveal lines={["Through Art"]} delay={0.52} duration={0.75} inView={false} />
           </span>
         </h1>
 
@@ -86,8 +86,7 @@ function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: EASE, delay: 0.7 }}
         >
-          Original paintings of paddy fields and coral reefs, commissions made for
-          your walls, and Guided Drawing art therapy for teams and individuals.
+          {home.sub}
         </motion.p>
 
         <motion.div
@@ -96,8 +95,8 @@ function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: EASE, delay: 0.82 }}
         >
-          <Button to="/works" variant="outline">View the collection</Button>
-          <Button to="/art-therapy" variant="ghost" arrow>Art therapy for teams</Button>
+          <Button to="/works" variant="outline">{home.paintingsCta}</Button>
+          <Button to="/art-therapy" variant="ghost" arrow>{home.therapyCta}</Button>
         </motion.div>
       </motion.div>
 
@@ -141,21 +140,19 @@ function Statement() {
       <div className="container">
         <div className="statement-lead">
           <div className="statement-copy">
-            <Reveal><p className="eyebrow eyebrow-row">Since 2014</p></Reveal>
-            <h2 className="statement-text">
-              <LineReveal
-                lines={["A former lawyer", "who traded the", "courtroom for", "the canvas."]}
-              />
-            </h2>
+            <Reveal><p className="eyebrow eyebrow-row">Lisa Teo</p></Reveal>
+            <Reveal delay={0.05}>
+              <h2 className="statement-text balance">{home.intro[0]}</h2>
+            </Reveal>
             <Reveal delay={0.2}>
-              <p className="statement-note pretty">
-                Now a full-time artist and certified art therapist — drawing from nature,
-                water, and the stillness of being present.
-              </p>
+              <p className="statement-note pretty">{home.intro[1]}</p>
+            </Reveal>
+            <Reveal delay={0.25}>
+              <p className="statement-note pretty">{home.intro[2]}</p>
             </Reveal>
             <Reveal delay={0.3}>
               <Link to="/about" className="link statement-link" data-cursor="true">
-                Read her story <ArrowRight />
+                {home.introCta} <ArrowRight />
               </Link>
             </Reveal>
           </div>
@@ -188,8 +185,7 @@ function Pathways() {
       <div className="container">
         <div className="section-head-row">
           <div className="section-head wide">
-            <Reveal><p className="eyebrow eyebrow-row">Three ways in</p></Reveal>
-            <Reveal delay={0.05}><h2 className="t-h1">Collect, commission, or bring <Brush color="brush-teal" className="t-serif-it">calm</Brush> to your team.</h2></Reveal>
+            <Reveal><p className="eyebrow eyebrow-row">Paintings · Commissions · Art Therapy</p></Reveal>
           </div>
         </div>
 
@@ -230,12 +226,12 @@ function Featured() {
       <div className="container">
         <div className="section-head-row">
           <div className="section-head wide">
-            <Reveal><p className="eyebrow eyebrow-row">Selected works</p></Reveal>
-            <Reveal delay={0.05}><h2 className="t-h1">Pieces currently <em className="t-serif-it">breathing</em> in the studio.</h2></Reveal>
+            <Reveal><p className="eyebrow eyebrow-row">Paintings</p></Reveal>
+            <Reveal delay={0.05}><h2 className="t-h1"><em className="t-serif-it">Available</em> Artworks</h2></Reveal>
           </div>
           <Reveal delay={0.1}>
             <Link to="/works" className="link featured-all" data-cursor="true">
-              All {allArtworks.length} works <ArrowRight />
+              Browse All Paintings <ArrowRight />
             </Link>
           </Reveal>
         </div>
@@ -269,7 +265,7 @@ function SeriesIndex() {
         <div className="section-head-row">
           <div className="section-head">
             <Reveal><p className="eyebrow eyebrow-row eyebrow-accent">The series</p></Reveal>
-            <Reveal delay={0.05}><h2 className="t-h1">Four bodies of work.</h2></Reveal>
+            <Reveal delay={0.05}><h2 className="t-h1">Body, Mind and Spirit</h2></Reveal>
           </div>
         </div>
 
@@ -316,28 +312,22 @@ function TherapyStrip() {
       <div className="container">
         <div className="split split-narrow">
           <div className="therapy-copy">
-            <Reveal><p className="eyebrow eyebrow-row">Art therapy for teams</p></Reveal>
+            <Reveal><p className="eyebrow eyebrow-row">Art Therapy</p></Reveal>
             <Reveal delay={0.05}>
-              <h2 className="t-h1 therapy-head">
-                Guided Drawing that lowers stress and rebuilds connection.
-              </h2>
+              <h2 className="t-h1 therapy-head">{home.therapyHeading}</h2>
             </Reveal>
             <Reveal delay={0.12}>
-              <p className="lede therapy-lede">
-                A body-based art therapy method — two hands, eyes closed, following the
-                breath. HRD Corp certified and trusted by Coca-Cola and AXA. No artistic
-                skill required; only willingness.
-              </p>
+              <p className="lede therapy-lede">{home.therapyText}</p>
             </Reveal>
             <Reveal delay={0.18}>
-              <Button to="/art-therapy" className="therapy-btn">Explore art therapy</Button>
+              <Button to="/art-therapy" className="therapy-btn">{home.therapyCta}</Button>
             </Reveal>
           </div>
         </div>
       </div>
 
       <div className="therapy-marquee">
-        <p className="eyebrow center therapy-marquee-label">Trusted by</p>
+        <p className="eyebrow center therapy-marquee-label">Trusted by Leading Corporates</p>
         <TrustMarquee speed={40} />
       </div>
     </section>
@@ -354,7 +344,7 @@ function Voices() {
         <div className="voices-grid">
           <div className="section-head">
             <Reveal><p className="eyebrow eyebrow-row">In their words</p></Reveal>
-            <Reveal delay={0.05}><h2 className="t-h2">Collectors &amp; <Brush color="brush-gold" className="t-serif-it">clients.</Brush></h2></Reveal>
+            <Reveal delay={0.05}><h2 className="t-h2"><Brush color="brush-gold" className="t-serif-it">Testimonials</Brush></h2></Reveal>
             <Reveal delay={0.1}>
               <div className="voices-nav">
                 {testimonials.map((_, idx) => (
@@ -390,6 +380,37 @@ function Voices() {
   );
 }
 
+/* -------- featured projects (lisateoart.com/featured-projects) -------- */
+function FeaturedProjects() {
+  return (
+    <section className="section featured-projects">
+      <div className="container">
+        <div className="section-head-row">
+          <div className="section-head wide">
+            <Reveal><p className="eyebrow eyebrow-row">Commissions · Exhibitions · Wellness</p></Reveal>
+            <Reveal delay={0.05}><h2 className="t-h1 balance">{home.featuredProjectsTitle}</h2></Reveal>
+          </div>
+          <Reveal delay={0.1}>
+            <Link to="/projects" className="link" data-cursor="true">Read More <ArrowRight /></Link>
+          </Reveal>
+        </div>
+
+        <RevealGroup as="ul" className="fp-list" stagger={0.08}>
+          {featuredProjects.map((p) => (
+            <RevealItem as="li" key={p.slug}>
+              <Link to={`/projects#${p.slug}`} className="fp-row" data-cursor="Read">
+                <span className="fp-row-title">{p.title}</span>
+                <span className="mono fp-row-date">{p.date}</span>
+                <ArrowRight className="fp-row-arrow" />
+              </Link>
+            </RevealItem>
+          ))}
+        </RevealGroup>
+      </div>
+    </section>
+  );
+}
+
 /* -------- from the journal -------- */
 function FromJournal() {
   const { posts: all, loading } = useJournalPosts();
@@ -402,11 +423,11 @@ function FromJournal() {
       <div className="container">
         <div className="section-head-row">
           <div className="section-head wide">
-            <Reveal><p className="eyebrow eyebrow-row">From the journal</p></Reveal>
-            <Reveal delay={0.05}><h2 className="t-h1 balance">Words from the studio.</h2></Reveal>
+            <Reveal><p className="eyebrow eyebrow-row">Journal</p></Reveal>
+            <Reveal delay={0.05}><h2 className="t-h1 balance">Art, Healing &amp; Creative Insights</h2></Reveal>
           </div>
           <Reveal delay={0.1}>
-            <Link to="/journal" className="link" data-cursor="true">All writing <ArrowRight /></Link>
+            <Link to="/journal" className="link" data-cursor="true">Read More <ArrowRight /></Link>
           </Reveal>
         </div>
 
@@ -437,6 +458,7 @@ export default function Home() {
       <Featured />
       <SeriesIndex />
       <TherapyStrip />
+      <FeaturedProjects />
       <FromJournal />
       <Voices />
     </>

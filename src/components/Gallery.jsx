@@ -408,7 +408,7 @@ function Lightbox({ items, index, setIndex, onClose }) {
               data-cursor="true"
               onClick={onClose}
             >
-              <span>Enquire to purchase</span>
+              <span>Enquire</span>
             </Link>
           ) : (
             <Link
@@ -417,7 +417,7 @@ function Lightbox({ items, index, setIndex, onClose }) {
               data-cursor="true"
               onClick={onClose}
             >
-              <span>Commission something similar</span>
+              <span>Make An Enquiry</span>
             </Link>
           )}
           {series && (

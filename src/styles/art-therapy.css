@@ -73,8 +73,8 @@
 .at-lead { border-bottom: 1px solid var(--line-soft); }
 .at-lead-inner { display: flex; flex-direction: column; align-items: flex-start; }
 .at-lead-head {
-  margin: 1.1rem 0 0; max-width: 30ch;
-  color: var(--ink); font-weight: 350;
+  margin: 1.1rem 0 0;
+  color: var(--ink); font-weight: 350; text-wrap: pretty;
 }
 .at-lead-note {
   margin-top: 1.3rem; max-width: 52ch; color: var(--ink-2);
@@ -101,7 +101,7 @@
   border-color: color-mix(in oklab, var(--aqua) 55%, var(--line));
 }
 @media (max-width: 640px) {
-  .at-lead-head { font-size: clamp(1.55rem, 6.4vw, 2rem); line-height: 1.18; max-width: 26ch; }
+  .at-lead-head { font-size: clamp(1.35rem, 5vw, 1.75rem); line-height: 1.3; }
   .at-lead-note { margin-top: 1rem; }
   .at-outcomes { margin-top: 1.6rem; }
 }
@@ -209,7 +209,7 @@
 /* ---- sessions & pricing ---- */
 .at-pricing { border-top: 1px solid var(--line-soft); }
 .at-pricing .section-head { margin-bottom: clamp(2.2rem, 5vh, 3.4rem); }
-.at-pricing-head { margin-top: 1.1rem; max-width: 16ch; }
+.at-pricing-head { margin-top: 1.1rem; }
 .at-pricing-grid {
   display: grid; grid-template-columns: 1fr 0.9fr;
   gap: clamp(2.5rem, 6vw, 5rem); align-items: start;
@@ -224,7 +224,8 @@
 .at-session-row:first-child { border-top: none; padding-top: 0; }
 .at-session-label { color: var(--accent-deep); font-size: 0.66rem; padding-top: 0.15em; }
 .at-session-value { color: var(--ink); font-size: var(--step-0); line-height: 1.5; }
-.at-pricing-note {
+.at-pricing-note { max-width: 46ch; }
+.at-pricing-note-unused {
   margin-top: 1.6rem; max-width: 44ch; color: var(--ink-3);
   font-size: 0.8rem; line-height: 1.55;
 }
@@ -350,3 +351,34 @@
 .at-voice-name { color: var(--accent-deep); font-size: 0.66rem; margin-top: auto; }
 .at-voices .section-head { margin-bottom: clamp(2rem, 5vh, 3.2rem); }
 @media (max-width: 860px) { .at-voice-grid { grid-template-columns: 1fr; } }
+
+/* ---- verbatim-copy additions ---- */
+.at-lead-note-label {
+  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--accent-deep); margin-right: 0.45rem;
+}
+
+/* corporate art wellness roster (lisateoart.com/corporate-art-wellness) */
+.at-roster-head { max-width: 46rem; }
+.at-roster-para { color: var(--ink-2); line-height: 1.7; margin-top: 1.1rem; }
+.at-roster-label { margin: clamp(2rem, 4.5vh, 3rem) 0 0.4rem; color: var(--ink-3); font-size: 0.72rem; }
+.at-roster-list { list-style: none; border-top: 1px solid var(--line); }
+.at-roster-row {
+  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
+  gap: 0.5rem 1.5rem; padding: clamp(0.85rem, 1.9vh, 1.15rem) 0;
+  border-bottom: 1px solid var(--line);
+}
+.at-roster-name { font-family: var(--serif); font-size: clamp(1.05rem, 1.9vw, 1.35rem); color: var(--ink); }
+.at-roster-meta { color: var(--ink-3); font-size: 0.72rem; white-space: nowrap; }
+
+/* faq */
+.at-faq-grid { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: clamp(2rem, 6vw, 5rem); align-items: start; }
+.at-faq-note { margin-top: 1.2rem; max-width: 30rem; }
+@media (max-width: 860px) { .at-faq-grid { grid-template-columns: 1fr; gap: 2.2rem; } }
+
+/* schedule a call (lisateoart.com/book-a-call) */
+.at-call-inner { max-width: 44rem; text-align: center; margin-inline: auto; }
+.at-call-inner .eyebrow-row { justify-content: center; }
+.at-call-head { margin: 0.5rem 0 1.4rem; color: var(--on-noir); }
+.at-call-para { color: var(--on-noir-2); line-height: 1.7; margin-bottom: 1rem; }
+.at-call-inner .btn { margin-top: 1.2rem; }

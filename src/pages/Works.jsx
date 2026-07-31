@@ -5,6 +5,7 @@ import Gallery from "../components/Gallery";
 import PageHeroBg from "../components/PageHeroBg";
 import { Reveal, LineReveal } from "../components/Reveal";
 import { allArtworks, availableArtworks } from "../data/artworks";
+import { home } from "../data/site";
 import "../styles/works.css";
 
 export default function Works() {
@@ -26,15 +27,12 @@ export default function Works() {
       <header className="page-hero page-hero--image">
         <PageHeroBg image="/images/artwork/awakening/05-Red-Coral-I.jpg" tint="#12202a" position="center" />
         <div className="container">
-          <Reveal className="page-hero-eyebrow"><p className="eyebrow eyebrow-row">The Collection · {allArtworks.length} works</p></Reveal>
+          <Reveal className="page-hero-eyebrow"><p className="eyebrow eyebrow-row">Paintings · {allArtworks.length} works</p></Reveal>
           <h1 className="t-h1">
-            <LineReveal lines={["Every piece,", "in one gallery."]} inView={false} />
+            <LineReveal lines={["Browse All", "Paintings"]} inView={false} />
           </h1>
           <Reveal delay={0.15} className="page-hero-lede">
-            <p className="lede">
-              Oils and acrylics across four series — paddy fields, coral reefs, and
-              commissions. {availableCount} originals are available now and ship worldwide.
-            </p>
+            <p className="lede">{home.sub}</p>
           </Reveal>
         </div>
       </header>
